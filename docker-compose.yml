@@ -1,0 +1,12 @@
+version: "3"
+services: 
+    client:
+        build: .
+        tty: true
+        ports: 
+            - "3000:3000"
+        volumes:
+            - "/app/node_modules"
+            - "./:/app"
+        working_dir: /app
+        command: npm start
