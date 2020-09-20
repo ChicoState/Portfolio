@@ -1,12 +1,29 @@
 version: "3"
 services: 
     client:
-        build: .
+        build: ./client
         tty: true
         ports: 
             - "3000:3000"
         volumes:
+            - "./client:/app"
             - "/app/node_modules"
-            - "./:/app"
         working_dir: /app
+        links:
+            - server:server
         command: npm start
+        depends_on: 
+            - server
+    server:
+        build: ./server
+        tty: true
+        working_dir: /server
+        ports:
+            - "3001:3001"
+        volumes:
+            - "./server:/server"
+            - "/server/node_modules"
+        expose:
+            - 3001
+        command: nodemon
+        
