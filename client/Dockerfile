@@ -1,6 +1,6 @@
-FROM node:12
+FROM node
 
 WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
+COPY package*.json ./
+COPY .eslint* ./
 RUN npm install

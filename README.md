@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ChicoState/Portfolio.svg?branch=main)](https://travis-ci.org/ChicoState/Portfolio)
+
 # Getting Started
 
 ## Things You Need to Download

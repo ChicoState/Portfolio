@@ -1,7 +1,6 @@
-FROM node:12
+FROM node
 
 WORKDIR /server
-COPY package.json ./
-COPY package-lock.json ./
+COPY package*.json ./
+COPY .eslint* ./
 RUN npm install
-RUN npm install -g nodemon --save

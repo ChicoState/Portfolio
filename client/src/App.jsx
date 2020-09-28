@@ -2,31 +2,34 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends React.Component {
-  constructor(props)
-  {
+class App extends Component {
+  constructor(props) {
     super(props);
     this.state = {
-      message: ""
-    }
-  }
-  componentDidMount(){
-    return fetch ("/api/greeting")
-      .then((response => response.json()))
-      .then((responseJson) => {
-        this.setState({
-          message: responseJson.message
-        })
-      })
+      message: '',
+    };
   }
 
-  render(){
+  componentDidMount() {
+    return fetch('/api/greeting')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          message: responseJson.message,
+        });
+      });
+  }
+
+  render() {
+    const { message } = this.state;
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            Edit 
+            <code>src/App.js</code>
+             and save to reload.
           </p>
           <a
             className="App-link"
@@ -37,7 +40,8 @@ class App extends React.Component {
             Learn React
           </a>
           <p>
-            Response from API: {this.state.message}
+            Response from API: 
+            {message}
           </p>
         </header>
       </div>

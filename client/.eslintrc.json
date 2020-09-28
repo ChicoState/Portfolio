@@ -1,0 +1,27 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jest": true
+    },
+    "extends": [
+        "prettier",
+        "airbnb",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 6
+    },
+    "plugins": [
+        "react",
+        "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "no-console": "off"
+    }
+}

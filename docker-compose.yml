@@ -29,7 +29,7 @@ services:
             - db
         links:
             - db:db
-        command: nodemon
+        command: npm start
     db:
         environment: 
             POSTGRES_USER: postgres

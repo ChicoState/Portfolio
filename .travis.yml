@@ -1,0 +1,15 @@
+language: node_js
+sudo: required
+services:
+  - docker
+jobs:
+  include:
+    - stage: "Dev"
+      name: "Server Lint"
+      script: docker-compose run server npm run lint
+    - script: docker-compose run client npm run lint
+      name: "Client Lint"
+    - script: docker-compose run server npm test
+      name: "Server Test"
+    - script: docker-compose run client npm test
+      name: "Client Test"
