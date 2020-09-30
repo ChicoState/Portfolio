@@ -11,14 +11,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-    return fetch('/api/greeting')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          message: responseJson.message,
-        });
-      });
-  }
+     return fetch('/api/greeting')
+       .then((response) => response.json())
+       .then((responseJson) => {
+         this.setState({
+           message: responseJson.message,
+         });
+       });
+   }
 
   render() {
     const { message } = this.state;
