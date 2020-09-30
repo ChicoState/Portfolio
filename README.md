@@ -11,10 +11,12 @@
 * https://docs.docker.com/compose/install/
 
 ## Running the app
-Clone the repo and cd into the repo
-```sh
-docker-compose up
-```
+1. Clone the repo and cd into the repo.
+
+2. Edit `server/.env` to add your MongoDB credentials.
+
+3. `docker-compose up`
+
 Open a browser and navigate to [localhost:3000](localhost:3000)
 
 # Making Contributions
