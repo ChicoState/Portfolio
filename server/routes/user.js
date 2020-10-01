@@ -1,10 +1,10 @@
 const express = require('express');
-
 const userRouter = express.Router();
 const passport = require('passport');
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
 require('dotenv').config();
+require('../passport.js');
 
 const signToken = (userID) =>
   JWT.sign(
