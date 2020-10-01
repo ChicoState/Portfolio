@@ -33,7 +33,7 @@ class App extends Component {
   render() {
     const { message } = this.state;
     const register = () => {
-      axios.post('/register', {
+      axios.post('/user/register', {
         registerUsername: this.state.registerUsername,
         registerPassword: this.state.registerPassword,
         registerEmail: this.state.registerEmail,
@@ -55,14 +55,14 @@ class App extends Component {
         password: this.state.loginPassword,
       },
       withCredentials: true,
-      url: "/login",
+      url: "/user/login",
     }).then((res) => console.log(res));
   };
   const getUser = () => {
     axios({
       method: "GET",
       withCredentials: true,
-      url: "/user",
+      url: "/user/authenticated",
     }).then((res) => {
       this.setState({data: res.data});
       console.log(res.data);
@@ -110,7 +110,7 @@ class App extends Component {
       <div>
         <h1>Get User</h1>
         <button onClick={getUser}>Submit</button>
-        {this.state.data ? <h1>Welcome Back {this.state.data.username}</h1> : null}
+        {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
       </div>
       </div>
     );

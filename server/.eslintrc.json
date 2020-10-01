@@ -12,11 +12,15 @@
     "plugins": [
       "prettier"
     ],
+    "parser": "esprima",
     "parserOptions": {
         "ecmaVersion": 6
     },
     "rules": {
       "prettier/prettier": "error",
-      "no-console": "off"
+      "no-console": "off",
+      "func-names": "off",
+      "implicit-arrow-linebreak": ["error", "below"],
+      "function-paren-newline": "off"
     }
 }
