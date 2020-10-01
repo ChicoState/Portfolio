@@ -116,8 +116,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-pgdata
-
 # Vim temporary files
 *~
 *.swp
