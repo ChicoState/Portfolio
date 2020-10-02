@@ -58,14 +58,29 @@ class App extends Component {
       url: "/user/login",
     }).then((res) => console.log(res));
   };
+    const logout = () => {
+    axios({
+      method: "GET",
+      withCredentials: true,
+      url: "/user/logout",
+    })
+    .then((res) => console.log(res))
+    .catch((error) => {
+      console.log(error);
+    })
+  };
+
   const getUser = () => {
     axios({
       method: "GET",
       withCredentials: true,
       url: "/user/authenticated",
-    }).then((res) => {
+    })
+    .then((res) => {
       this.setState({data: res.data});
-      console.log(res.data);
+    })
+    .catch((error) => {
+      console.log(error);
     });
   };
     return (
@@ -111,6 +126,10 @@ class App extends Component {
         <h1>Get User</h1>
         <button onClick={getUser}>Submit</button>
         {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
+      </div>
+      <div>
+        <h1>Logout</h1>
+        <button onClick={logout}>Submit</button>
       </div>
       </div>
     );
