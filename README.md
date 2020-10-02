@@ -13,7 +13,7 @@
 ## Running the app
 1. Clone the repo and cd into the repo.
 
-2. Edit `server/.env` to add your MongoDB credentials.
+2. Use `server/.env.example` to create a `server/.env` file with your secret and MongoDB credentials.
 
 3. `docker-compose up`
 
