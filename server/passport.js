@@ -35,18 +35,20 @@ passport.use(
 
 // authenticated local strategy using username and password
 passport.use(
-  new LocalStrategy((username, password, done) =>
-    User.findOne({ username }, (err, user) => {
-      // something went wrong with database
-      if (err) {
-        return done(err);
-      }
-      // if no user exist
-      if (!user) {
-        return done(null, false);
-      }
-      // check if password is correct
-      return user.comparePassword(password, done);
-    }),
+  new LocalStrategy(
+    { usernameField: 'email', passwordField: 'password' },
+    (email, password, done) =>
+      User.findOne({ email }, (err, user) => {
+        // something went wrong with database
+        if (err) {
+          return done(err);
+        }
+        // if no user exist
+        if (!user) {
+          return done(null, false);
+        }
+        // check if password is correct
+        return user.comparePassword(password, done);
+      }),
   ),
 );

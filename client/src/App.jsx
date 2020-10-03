@@ -14,7 +14,7 @@ class App extends Component {
       registerFirstName: '',
       registerMiddleName: '',
       registerLastName: '',
-      loginUsername: '',
+      loginEmail: '',
       loginPassword: '',
       data: ''
     };
@@ -51,7 +51,7 @@ class App extends Component {
     axios({
       method: "POST",
       data: {
-        username: this.state.loginUsername,
+        email: this.state.loginEmail,
         password: this.state.loginPassword,
       },
       withCredentials: true,
@@ -118,7 +118,7 @@ class App extends Component {
       </div>
       <div>
         <h1>Login</h1>
-        <input placeholder='username' onChange={e => this.setState({loginUsername: e.target.value})}></input>
+        <input placeholder='email' onChange={e => this.setState({loginEmail: e.target.value})}></input>
         <input placeholder='password' onChange={e => this.setState({loginPassword: e.target.value})}></input>
         <button onClick={login}>Submit</button>
       </div>
