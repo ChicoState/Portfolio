@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import logo from './logo.svg';
+import logo from './portfolio_text.jpg';
+//import icon from './porfolio_logo.png';
+import SocialPage from './components/feed';
 import './App.css';
 
 class App extends Component {
@@ -130,6 +132,9 @@ class App extends Component {
       <div>
         <h1>Logout</h1>
         <button onClick={logout}>Submit</button>
+      </div>
+      <div style={{textAlign: "center"}}>
+        <SocialPage></SocialPage>
       </div>
       </div>
     );
