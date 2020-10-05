@@ -57,7 +57,7 @@ userRouter.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     res.clearCookie('access_token');
-    res.json({ user: { email: '', role: '' }, success: true });
+    res.json({ user: { username: '', role: '' }, success: true });
   },
 );
 

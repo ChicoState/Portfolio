@@ -7,7 +7,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: '',
+      motd: '',
       registerUsername: '',
       registerPassword: '',
       registerEmail: '',
@@ -16,7 +16,10 @@ class App extends Component {
       registerLastName: '',
       loginEmail: '',
       loginPassword: '',
-      data: ''
+      data: '',
+      title: '',
+      message: '',
+      posts: '',
     };
   }
 
@@ -25,13 +28,13 @@ class App extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
-          message: responseJson.message,
+          motd: responseJson.motd,
         });
       });
   }
 
   render() {
-    const { message } = this.state;
+    const { motd } = this.state;
     const register = () => {
       axios.post('/user/register', {
         registerUsername: this.state.registerUsername,
@@ -48,41 +51,82 @@ class App extends Component {
       })
     };
     const login = () => {
-    axios({
-      method: "POST",
-      data: {
-        email: this.state.loginEmail,
-        password: this.state.loginPassword,
-      },
-      withCredentials: true,
-      url: "/user/login",
-    }).then((res) => console.log(res));
-  };
+      axios({
+        method: "POST",
+        data: {
+          email: this.state.loginEmail,
+          password: this.state.loginPassword,
+        },
+        withCredentials: true,
+        url: "/user/login",
+      }).then((res) => console.log(res));
+    };
+    const create = () => {
+      axios({
+        method: "POST",
+        data: {
+          title: this.state.title,
+          message: this.state.message,
+        },
+        withCredentials: true,
+        url: "/post/create",
+      }).then((res) => console.log(res));
+    };
+    const deletePost = (postid) => {
+      axios({
+        method: "POST",
+        data: {
+          id: postid,
+        },
+        withCredentials: true,
+        url: "/post/delete",
+      }).then((res) => {
+        if (res.status === 200) {
+          this.setState(prevState => ({
+            posts: prevState.posts.filter(post => post._id !== postid)
+          }));
+        }
+      });
+    };
     const logout = () => {
-    axios({
-      method: "GET",
-      withCredentials: true,
-      url: "/user/logout",
-    })
-    .then((res) => console.log(res))
-    .catch((error) => {
-      console.log(error);
-    })
-  };
+      axios({
+        method: "GET",
+        withCredentials: true,
+        url: "/user/logout",
+      })
+        .then((res) => console.log(res))
+        .catch((error) => {
+          console.log(error);
+        })
+    };
 
-  const getUser = () => {
-    axios({
-      method: "GET",
-      withCredentials: true,
-      url: "/user/authenticated",
-    })
-    .then((res) => {
-      this.setState({data: res.data});
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
+    const getUser = () => {
+      axios({
+        method: "GET",
+        withCredentials: true,
+        url: "/user/authenticated",
+      })
+        .then((res) => {
+          this.setState({data: res.data});
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const getPosts = () => {
+      axios({
+        method: "POST",
+        withCredentials: true,
+        url: "/post/view",
+      })
+        .then((res) => {
+          this.setState({posts: res.data});
+          console.log(this.state.posts);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
     return (
       <div className="App">
       <header className="App-header">
@@ -102,7 +146,7 @@ class App extends Component {
       </a>
       <p>
       Response from API: 
-      {message}
+      {motd}
       </p>
       </header>
       <div>
@@ -117,19 +161,37 @@ class App extends Component {
       <button onClick={register}>Submit</button>
       </div>
       <div>
-        <h1>Login</h1>
-        <input placeholder='email' onChange={e => this.setState({loginEmail: e.target.value})}></input>
-        <input placeholder='password' onChange={e => this.setState({loginPassword: e.target.value})}></input>
-        <button onClick={login}>Submit</button>
+      <h1>Login</h1>
+      <input placeholder='email' onChange={e => this.setState({loginEmail: e.target.value})}></input>
+      <input placeholder='password' onChange={e => this.setState({loginPassword: e.target.value})}></input>
+      <button onClick={login}>Submit</button>
       </div>
       <div>
-        <h1>Get User</h1>
-        <button onClick={getUser}>Submit</button>
-        {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
+      <h1>Get User</h1>
+      <button onClick={getUser}>Submit</button>
+      {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
       </div>
       <div>
-        <h1>Logout</h1>
-        <button onClick={logout}>Submit</button>
+      <h1>Logout</h1>
+      <button onClick={logout}>Submit</button>
+      </div>
+      <div>
+      <h1>Create Post</h1>
+      <input placeholder='Title' onChange={e => this.setState({title: e.target.value})}></input>
+      <input placeholder='Message' onChange={e => this.setState({message: e.target.value})}></input>
+      <button onClick={create}>Submit</button>
+      </div>
+      <div>
+      <h1>Get Posts</h1>
+      <button onClick={getPosts}>Submit</button>
+      <ul>
+      {
+        this.state.posts ? this.state.posts.map((item) => {
+          return <li key={item._id}>{item.title} {item.message}<button type="button" onClick={() => deletePost(item._id)}>Delete</button></li>;
+        }) : null
+
+      }
+      </ul>
       </div>
       </div>
     );
