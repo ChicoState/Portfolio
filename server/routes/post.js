@@ -29,8 +29,14 @@ postRouter.post(
   '/delete',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    Post.deleteOne({ _id: req.body.id })
-      .then(() => res.send(`Post ${req.body.id} successfully deleted.`))
+    Post.findById(req.body.id)
+      .then((post) => {
+        if (String(post.user) !== String(req.user._id)) {
+          return res.status(400).json('Invalid deletion request.');
+        }
+        post.delete();
+        return res.send(`Post ${req.body.id} successfully deleted.`);
+      })
       .catch((err) => {
         res.status(400).json(err);
       });
