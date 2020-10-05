@@ -20,10 +20,11 @@ class Post extends Component {
               withCredentials: true,
               url: "/post/create",
             }).then((res) => {
-                if(res.status == 200){
+                if(res.status === 200){
                     getPosts();
                 }
             })
+            .catch((error) => console.log(error));
           };
           const deletePost = (postid) => {
             axios({
@@ -39,7 +40,8 @@ class Post extends Component {
                   posts: prevState.posts.filter(post => post._id !== postid)
                 }));
               }
-            });
+            })
+            .catch((error) => console.log(error));
           };
           const getPosts = () => {
             axios({

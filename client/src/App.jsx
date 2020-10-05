@@ -3,6 +3,8 @@ import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
 import Post from './components/post';
+import UpdateUser from './components/updateUser';
+import ChangePassword from './components/changePassword'
 
 class App extends Component {
   constructor(props) {
@@ -56,7 +58,8 @@ class App extends Component {
         },
         withCredentials: true,
         url: "/user/login",
-      }).then((res) => console.log(res));
+      }).then((res) => console.log(res))
+      .catch((error) => console.log(error));
     };
     
     const logout = () => {
@@ -132,6 +135,8 @@ class App extends Component {
       <h1>Logout</h1>
       <button onClick={logout}>Submit</button>
       <Post/>
+      <UpdateUser/>
+      <ChangePassword/>
       </div>
       </div>
     );
