@@ -1,5 +1,7 @@
 import React from "react";
+import 'react-bootstrap';
 import {  MDBRow,  MDBCard, MDBCardBody,  MDBIcon} from "mdbreact";
+import '../App.css'
 
 const SocialPage = () => {
   return (
