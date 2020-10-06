@@ -2,7 +2,6 @@ import React, {Component } from 'react';
 import axios from 'axios';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import history from "../../routes/history"
 
 
 
@@ -16,7 +15,7 @@ class Login extends Component {
   render(){
     //const [show, setShow] = useState(false);
 
-    const handleClose = () => {this.setState({show: false}); history.back()};
+    const handleClose = () => {this.setState({show: false}); this.props.history.push('./')};
 
 
     const loginUser = () => {
@@ -28,7 +27,9 @@ class Login extends Component {
         },
         withCredentials: true,
         url: "/user/login",
-      }).then((res) => console.log(res));
+      }).then((res) => console.log(res)).catch(error => {
+        console.error(error)
+      });
     };
     return(
           <div>
@@ -39,7 +40,7 @@ class Login extends Component {
               <Modal.Body>
                 <input placeholder='email' onChange={e => this.setState({email: e.target.value})}></input>
                 <input placeholder='password' onChange={e => this.setState({password: e.target.value})}></input>
-                <button onClick= {()=>{loginUser(); history.back();}}>Submit</button>
+                <button onClick= {()=>{loginUser(); handleClose()}}>Submit</button>
               </Modal.Body>
               <Modal.Footer>
               </Modal.Footer>

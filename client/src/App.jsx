@@ -51,9 +51,10 @@ class App extends Component {
       console.log(error);
     });
   };
-    return (
-      <div className="App">
+  return (
+    <div className="App">
       <Navigation/>
+      <Routes/>
       <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <p>
@@ -74,7 +75,6 @@ class App extends Component {
       {message}
       </p>
       </header>
-      <Routes/>
       <div>
 
       </div>

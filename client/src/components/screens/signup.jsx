@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-import history from "../../routes/history"
 
 class SignUp extends Component {
     state = {
@@ -17,7 +16,8 @@ class SignUp extends Component {
 
     render(){        
 
-        const handleClose = () => {this.setState({show: false}); history.back()};
+        
+        const handleClose = () => {this.setState({show: false});this.props.history.push('./')};
 
         const register = () => {
             axios.post('/user/register', {
@@ -40,17 +40,16 @@ class SignUp extends Component {
             <div>
             <Modal show={this.state.show} onHide={handleClose}>
               <Modal.Header closeButton>
-                <Modal.Title>Login</Modal.Title>
+                <Modal.Title>Sign Up</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <h1>Register</h1>
                 <input placeholder='username' onChange={e => this.setState({registerUsername: e.target.value})}></input>
                 <input placeholder='password' onChange={e => this.setState({registerPassword: e.target.value})}></input>
                 <input placeholder='email' onChange={e => this.setState({registerEmail: e.target.value})}></input>
                 <input placeholder='first name' onChange={e => this.setState({registerFirstName: e.target.value})}></input>
                 <input placeholder='last name' onChange={e => this.setState({registerLastName: e.target.value})}></input>
                 <input placeholder='middle name' onChange={e => this.setState({registerMiddleName: e.target.value})}></input>
-                <button onClick={()=>{register(); history.back();}}>Submit</button>
+                <button onClick={()=>{register(); handleClose()}}>Submit</button>
               </Modal.Body>
               <Modal.Footer>
               </Modal.Footer>

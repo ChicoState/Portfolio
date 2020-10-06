@@ -19,5 +19,4 @@ const Navigation = (props) => {
         </Navbar>
     )
 }
-
 export default withRouter(Navigation);
