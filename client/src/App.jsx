@@ -72,14 +72,13 @@ class App extends Component {
       Response from API: 
       {message}
       </p>
-      </header>      
-      <ul>
-        <li>
-            <Link to="/login"><button>Login</button></Link>
-            <Link to="/signup"><button>SignUp</button></Link>
-        </li>
-      </ul>
-
+      </header>
+        <ul>
+          <li>
+              <Link to="/login"><button>Login</button></Link>
+              <Link to="/signup"><button>SignUp</button></Link>
+          </li>
+        </ul>    
       <Routes/>
       <div>
 
