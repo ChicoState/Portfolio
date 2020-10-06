@@ -4,6 +4,9 @@ import logo from './logo.svg';
 import './App.css';
 import Routes from './routes/routes';
 import Navigation from './components/navbar'
+import Post from './components/post';
+import UpdateUser from './components/updateUser';
+import ChangePassword from './components/changePassword'
 
 class App extends Component {
   constructor(props) {
@@ -11,6 +14,7 @@ class App extends Component {
     this.state = {
       message: '',
       data: '',
+      motd: '',
     };
   }
 
@@ -19,24 +23,23 @@ class App extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
-          message: responseJson.message,
+          motd: responseJson.motd,
         });
       });
   }
   render() {
-    const { message } = this.state;
-  
+    const { motd } = this.state;
     const logout = () => {
-    axios({
-      method: "GET",
-      withCredentials: true,
-      url: "/user/logout",
-    })
-    .then((res) => console.log(res))
-    .catch((error) => {
-      console.log(error);
-    })
-  };
+      axios({
+        method: "GET",
+        withCredentials: true,
+        url: "/user/logout",
+      })
+        .then((res) => console.log(res))
+        .catch((error) => {
+          console.log(error);
+        })
+    };
 
   const getUser = () => {
     axios({
@@ -72,21 +75,23 @@ class App extends Component {
       </a>
       <p>
       Response from API: 
-      {message}
+      {motd}
       </p>
       </header>
       <div>
-
       </div>
 
       <div>
-        <h1>Get User</h1>
-        <button onClick={getUser}>Submit</button>
-        {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
+      <h1>Get User</h1>
+      <button onClick={getUser}>Submit</button>
+      {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
       </div>
       <div>
-        <h1>Logout</h1>
-        <button onClick={logout}>Submit</button>
+      <h1>Logout</h1>
+      <button onClick={logout}>Submit</button>
+      <Post/>
+      <UpdateUser/>
+      <ChangePassword/>
       </div>
       </div>
     );
