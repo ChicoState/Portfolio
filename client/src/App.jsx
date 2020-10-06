@@ -3,7 +3,7 @@ import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
 import Routes from './routes/routes';
-import { Link } from 'react-router-dom';
+import Navigation from './components/navbar'
 
 class App extends Component {
   constructor(props) {
@@ -53,6 +53,7 @@ class App extends Component {
   };
     return (
       <div className="App">
+      <Navigation/>
       <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <p>
@@ -73,12 +74,6 @@ class App extends Component {
       {message}
       </p>
       </header>
-        <ul>
-          <li>
-              <Link to="/login"><button>Login</button></Link>
-              <Link to="/signup"><button>SignUp</button></Link>
-          </li>
-        </ul>    
       <Routes/>
       <div>
 
