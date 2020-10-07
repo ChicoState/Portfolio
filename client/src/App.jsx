@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import NavigationBar from './components/navigationbar';
-import SocialPage from './components/feed';
+import SocialFeed from './components/socialfeed';
 import Login from './components/login';
 import SignUp from './components/signup';
 import './App.css';
@@ -41,7 +41,7 @@ class App extends Component {
           <div className="row">
             <div className="col-sm-2"></div>
             <div className="col-sm-8">
-              <SocialPage></SocialPage>
+              <SocialFeed></SocialFeed>
             </div>
             <div className="col-sm-2"></div>
           </div>

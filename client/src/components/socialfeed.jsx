@@ -3,7 +3,7 @@ import 'react-bootstrap';
 import {  MDBRow,  MDBCard, MDBCardBody,  MDBIcon} from "mdbreact";
 import '../App.css'
 
-const SocialPage = () => {
+const SocialFeed = () => {
   return (
     <MDBCard
         className="my-5 px-5 pt-4"
@@ -170,4 +170,4 @@ const SocialPage = () => {
   );
 }
 
-export default SocialPage;
+export default SocialFeed;
