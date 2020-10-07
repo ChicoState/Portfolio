@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
+import NavigationBar from './components/navigationbar';
+import SocialFeed from './components/socialfeed';
 import './App.css';
 import Routes from './routes/routes';
-import Navigation from './components/navbar'
 import Post from './components/post';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
+import GetUserClass from './components/getUser';
 
 class App extends Component {
   constructor(props) {
@@ -29,70 +29,30 @@ class App extends Component {
   }
   render() {
     const { motd } = this.state;
-    const logout = () => {
-      axios({
-        method: "GET",
-        withCredentials: true,
-        url: "/user/logout",
-      })
-        .then((res) => console.log(res))
-        .catch((error) => {
-          console.log(error);
-        })
-    };
 
-  const getUser = () => {
-    axios({
-      method: "GET",
-      withCredentials: true,
-      url: "/user/authenticated",
-    })
-    .then((res) => {
-      this.setState({data: res.data});
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  };
-  return (
-    <div className="App">
-      <Navigation/>
-      <Routes/>
-      <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-      Edit 
-      <code>src/App.js</code>
-      and save to reload.
-      </p>
-      <a
-      className="App-link"
-      href="https://reactjs.org"
-      target="_blank"
-      rel="noopener noreferrer"
-      >
-      Learn React
-      </a>
-      <p>
-      Response from API: 
-      {motd}
-      </p>
-      </header>
-      <div>
-      </div>
-
-      <div>
-      <h1>Get User</h1>
-      <button onClick={getUser}>Submit</button>
-      {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
-      </div>
-      <div>
-      <h1>Logout</h1>
-      <button onClick={logout}>Submit</button>
-      <Post/>
-      <UpdateUser/>
-      <ChangePassword/>
-      </div>
+    return (
+      <div className="Homepage">
+        <NavigationBar></NavigationBar>
+        <Routes/>
+        <div className="Database">
+          <p>
+            Response from API:
+        {motd}
+          </p>
+        </div>
+        <GetUserClass/>
+        <Post/>
+        <UpdateUser/>
+        <ChangePassword/>
+        <div className="container">
+          <div className="row">
+            <div className="col-sm-2"></div>
+            <div className="col-sm-8">
+              <SocialFeed></SocialFeed>
+            </div>
+            <div className="col-sm-2"></div>
+          </div>
+        </div>
       </div>
     );
   }
