@@ -26,9 +26,13 @@ const userRouter = require('./routes/user');
 
 app.use('/user', userRouter);
 
+const postRouter = require('./routes/post');
+
+app.use('/post', postRouter);
+
 app.get('/api/greeting', (req, res) => {
   mongoose.connect(`${process.env.MONGO_URL}`).then(() => {
-    res.json({ message: 'Successfully connected to database!' });
+    res.json({ motd: 'Successfully connected to database!' });
     console.log('Successfully connected to database!');
   });
 });

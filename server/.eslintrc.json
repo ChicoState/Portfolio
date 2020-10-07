@@ -20,7 +20,9 @@
       "prettier/prettier": "error",
       "no-console": "off",
       "func-names": "off",
-      "implicit-arrow-linebreak": ["error", "below"],
-      "function-paren-newline": "off"
+      "implicit-arrow-linebreak": "off",
+      "function-paren-newline": "off",
+      "no-underscore-dangle": [2, {"allow": ["_id"]}],
+      "no-param-reassign": "off"
     }
 }

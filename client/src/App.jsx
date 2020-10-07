@@ -4,12 +4,15 @@ import SocialFeed from './components/socialfeed';
 import Login from './components/login';
 import SignUp from './components/signup';
 import './App.css';
+import Post from './components/post';
+import UpdateUser from './components/updateUser';
+import ChangePassword from './components/changePassword'
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: '',
+      motd: '',
     };
   }
 
@@ -18,13 +21,13 @@ class App extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({
-          message: responseJson.message,
+          motd: responseJson.motd,
         });
       });
   }
 
   render() {
-    const { message } = this.state;
+    const { motd } = this.state;
 
     return (
       <div className="Homepage">
@@ -32,11 +35,14 @@ class App extends Component {
         <div className="Database">
           <p>
             Response from API:
-        {message}
+        {motd}
           </p>
         </div>
-        <Login></Login>
-        <SignUp></SignUp>
+        <Login/>
+        <SignUp/>
+        <Post/>
+        <UpdateUser/>
+        <ChangePassword/>
         <div className="container">
           <div className="row">
             <div className="col-sm-2"></div>
