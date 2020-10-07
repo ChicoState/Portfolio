@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import SocialFeed from './socialfeed';
+import SocialFeed from '../components/socialfeed';
 
 test('John Doe social feed loads', () => {
   const { getByText } = render(<SocialFeed />);

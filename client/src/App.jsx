@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import NavigationBar from './components/navigationbar';
 import SocialFeed from './components/socialfeed';
-import Login from './components/login';
-import SignUp from './components/signup';
 import './App.css';
+import Routes from './routes/routes';
 import Post from './components/post';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
+import GetUserClass from './components/getUser';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      message: '',
+      data: '',
       motd: '',
     };
   }
@@ -25,21 +27,20 @@ class App extends Component {
         });
       });
   }
-
   render() {
     const { motd } = this.state;
 
     return (
       <div className="Homepage">
         <NavigationBar></NavigationBar>
+        <Routes/>
         <div className="Database">
           <p>
             Response from API:
         {motd}
           </p>
         </div>
-        <Login/>
-        <SignUp/>
+        <GetUserClass/>
         <Post/>
         <UpdateUser/>
         <ChangePassword/>
@@ -56,6 +57,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default App;
