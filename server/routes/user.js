@@ -102,8 +102,11 @@ userRouter.put(
         }
 
         user.password = req.body.new_password;
-        user.save();
-        return res.send(`Password for ${req.user.username} has been changed!`);
+        user.save((saveError) => {
+          if(saveError) res.send("error saving new password to user doc!");
+          return res.send(`Password for ${req.user.username} has been changed!`);
+        });
+        return result;
       });
       return user;
     });
