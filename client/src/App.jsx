@@ -7,6 +7,7 @@ import Post from './components/post';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
 import GetUserClass from './components/getUser';
+import RecommendedFeed from './components/RecommendedFeed'
 
 class App extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class App extends Component {
         <Post/>
         <UpdateUser/>
         <ChangePassword/>
+        <RecommendedFeed/>
         <div className="container">
           <div className="row">
             <div className="col-sm-2"></div>
