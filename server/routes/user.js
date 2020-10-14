@@ -1,11 +1,13 @@
 require('dotenv').config();
 require('../passport.js');
 const express = require('express');
+
 const userRouter = express.Router();
 const passport = require('passport');
 const JWT = require('jsonwebtoken');
-const User = require('../models/user');
 const cors = require('cors');
+const User = require('../models/user');
+
 userRouter.use(cors());
 const signToken = (userID) =>
   JWT.sign(
@@ -103,8 +105,10 @@ userRouter.put(
 
         user.password = req.body.new_password;
         user.save((saveError) => {
-          if(saveError) res.send("error saving new password to user doc!");
-          return res.send(`Password for ${req.user.username} has been changed!`);
+          if (saveError) res.send('error saving new password to user doc!');
+          return res.send(
+            `Password for ${req.user.username} has been changed!`,
+          );
         });
         return result;
       });

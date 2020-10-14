@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Attachment = require('./attachment');
 
 const PostSchema = mongoose.Schema({
   title: {
@@ -9,14 +10,11 @@ const PostSchema = mongoose.Schema({
     type: String,
     max: 1024,
   },
-  /*
-    attachments: [{
-      attachment: mongoose.Schema({
-        type: String,
-        data: Buffer
-      })
-    }],
-    */
+  attachments: [
+    {
+      type: String,
+    },
+  ],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -31,6 +29,27 @@ const PostSchema = mongoose.Schema({
     required: [true, 'Post must have timestamp'],
     default: Date.now,
   },
+});
+
+PostSchema.pre('remove', function (next) {
+  for (let i = 0; i < this.attachments.length; i += 1) {
+    const attachment = this.attachments[i];
+    this.constructor
+      .countDocuments({ attachments: attachment })
+      .exec()
+      .then((count) => {
+        if (count <= 1) {
+          Attachment.findOneAndDelete({ filename: attachment })
+            .exec()
+            .then((deleted) => {
+              mongoose.connection.collection('fs.chunks').deleteMany({
+                files_id: deleted._id,
+              });
+            });
+        }
+      });
+  }
+  next();
 });
 
 module.exports = mongoose.model('Post', PostSchema);

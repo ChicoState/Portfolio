@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.json());
@@ -31,6 +32,10 @@ app.use('/user', userRouter);
 const postRouter = require('./routes/post');
 
 app.use('/post', postRouter);
+
+const attachmentRouter = require('./routes/attachment');
+
+app.use('/attachment', attachmentRouter);
 
 app.get('/api/greeting', (req, res) => {
   mongoose.connect(`${process.env.MONGO_URL}`).then(() => {
