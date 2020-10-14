@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Row, Container} from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
+import Post from './post';
 import axios from 'axios';
 
 class DisplayPost extends Component {
@@ -34,59 +35,16 @@ class DisplayPost extends Component {
         });
     };
 
-    const deletePost = (postid) => {
-      axios({
-        method: "POST",
-        data: {
-          id: postid,
-        },
-        withCredentials: true,
-        url: "/post/delete",
-      }).then((res) => {
-        if (res.status === 200) {
-          this.setState(prevState => ({
-            posts: prevState.posts.filter(post => post._id !== postid)
-          }));
-        }
-      })
-        .catch((error) => console.log(error));
-    };
 
     return(
-      <div>
-      <h1>Get Posts</h1>
-      <button onClick={getPosts}>Submit</button>
-      <ul>
-      {
-        this.state.posts ? this.state.posts.map((item) => {
-          let attachment = <div></div>;
-          if (item.attachments[0]) {
-            if (this.state.image_formats.has(item.attachments[0].split('.').pop().toLowerCase())) {
-              attachment = <img src={'/attachment/' + item.attachments[0]}></img>;
-            } else if (this.state.audio_formats.has(item.attachments[0].split('.').pop().toLowerCase())) {
-              attachment = 
-                <audio controls src={'/attachment/' + item.attachments[0]}>
-                Your browser does not support the <code>audio</code> element.
-                </audio>;
-            } else if (this.state.video_formats.has(item.attachments[0].split('.').pop().toLowerCase())) {
-              attachment =
-                <video controls src={'/attachment/' + item.attachments[0]}>
-                Your browser does not support the
-                <code>video</code> element.
-                </video>;
-            }
-          }
+      <Container>
+      <Button variant="primary" onClick={getPosts}>Get Posts</Button>
+       { this.state.posts ? this.state.posts.map((item) => {
           return(
-            <li key={item._id}>
-            {item.title}
-            {item.message}
-            {attachment}
-            <button type="button" onClick={() => deletePost(item._id)}>Delete</button>
-            </li>);
-        }) : null
-      }
-      </ul>
-      </div>
+            <Post title={item.title} message={item.message} attachments={item.attachments} id={item._id} />
+          )}) : null
+       }
+      </Container>
     )
   }
 }

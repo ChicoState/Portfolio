@@ -1,23 +1,23 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Container, Form, Modal } from 'react-bootstrap';
 
 class SignUp extends Component {
     state = {
-        registerUsername:"",
-        registerPassword:"",
-        registerEmail:"",
-        firstregisterFirstNameName:"",
-        registerMiddleName:"",
-        registerLastName:"",
+        registerUsername: "",
+        registerPassword: "",
+        registerEmail: "",
+        firstregisterFirstNameName: "",
+        registerMiddleName: "",
+        registerLastName: "",
         show: true,
     }
 
-    render(){        
+    render() {
 
-        
-        const handleClose = () => {this.setState({show: false});this.props.history.push('./')};
+
+        const handleClose = () => { this.setState({ show: false }); this.props.history.push('./') };
 
         const register = () => {
             axios.post('/user/register', {
@@ -35,26 +35,48 @@ class SignUp extends Component {
                 console.error(error)
             })
         };
-        
-        return(
-            <div>
-            <Modal show={this.state.show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Sign Up</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <input placeholder='username' onChange={e => this.setState({registerUsername: e.target.value})}></input>
-                <input placeholder='password' onChange={e => this.setState({registerPassword: e.target.value})}></input>
-                <input placeholder='email' onChange={e => this.setState({registerEmail: e.target.value})}></input>
-                <input placeholder='first name' onChange={e => this.setState({registerFirstName: e.target.value})}></input>
-                <input placeholder='last name' onChange={e => this.setState({registerLastName: e.target.value})}></input>
-                <input placeholder='middle name' onChange={e => this.setState({registerMiddleName: e.target.value})}></input>
-                <button onClick={()=>{register(); handleClose()}}>Submit</button>
-              </Modal.Body>
-              <Modal.Footer>
-              </Modal.Footer>
-            </Modal>
-            </div>
+
+        return (
+            <Container>
+                <Modal show={this.state.show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Sign Up</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="formSignupUsername">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control placeholder="Username" onChange={e => this.setState({ registerUsername: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group controlId="formSignupPassword">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control placeholder="Password" onChange={e => this.setState({ registerPassword: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group controlId="formSignupEmail">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control placeholder="Email" onChange={e => this.setState({ registerEmail: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group controlId="formSignupFirstName">
+                                <Form.Label>FirstName</Form.Label>
+                                <Form.Control placeholder="FirstName" onChange={e => this.setState({ registerFirstName: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group controlId="formSignupLastName">
+                                <Form.Label>LastName</Form.Label>
+                                <Form.Control placeholder="LastName" onChange={e => this.setState({ registerLastName: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group controlId="formSignupMiddleName">
+                                <Form.Label>MiddleName</Form.Label>
+                                <Form.Control placeholder="MiddleName" onChange={e => this.setState({ registerMiddleName: e.target.value })} />
+                            </Form.Group>
+                            <Button variant="primary" type="submit" onClick={() => { register(); handleClose() }}>
+                                Sign up
+                            </Button>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                    </Modal.Footer>
+                </Modal>
+            </Container>
         );
     }
 };
