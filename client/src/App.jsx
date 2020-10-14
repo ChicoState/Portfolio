@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Container } from 'react-bootstrap';
 import NavigationBar from './components/navigationbar';
 import SocialFeed from './components/socialfeed';
 import './App.css';
 import Routes from './routes/routes';
-import Post from './components/post';
+import CreatePost from './components/createPost';
+import DisplayPost from './components/displayPost';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
 import GetUserClass from './components/getUser';
@@ -33,6 +35,7 @@ class App extends Component {
     return (
       <div className="Homepage">
         <NavigationBar></NavigationBar>
+      <Container>
         <Routes/>
         <div className="Database">
           <p>
@@ -40,8 +43,9 @@ class App extends Component {
         {motd}
           </p>
         </div>
+        <CreatePost/>
+        <DisplayPost/>
         <GetUserClass/>
-        <Post/>
         <UpdateUser/>
         <ChangePassword/>
         <div className="container">
@@ -53,6 +57,7 @@ class App extends Component {
             <div className="col-sm-2"></div>
           </div>
         </div>
+      </Container>
       </div>
     );
   }
