@@ -158,4 +158,47 @@ userRouter.post(
     });
   },
 );
+
+userRouter.get(
+  '/following',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.find(
+      { _id: { $ne: req.user._id } },
+      'username first_name last_name',
+      (err, docs) => {
+        if (err) res.status(500).send(err);
+        const userDocs = docs.filter((user) =>
+          req.user.followed_users.includes(user._id),
+        );
+        res.send(userDocs);
+      },
+    );
+  },
+);
+
+userRouter.post(
+  '/unfollow',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findById(req.user._id, (err, user) => {
+      if (err) return res.status(500).send(err);
+      if (user.followed_users.includes(req.body.follow_user_id)) {
+        user.followed_users.pull(req.body.follow_user_id);
+        user.save((saveError) => {
+          if (saveError) {
+            res
+              .status(500)
+              .send(`${saveError}Could not unfollow user from database`);
+          }
+          return res.send(
+            `${req.user.username} is now unfollowing ${req.body.follow_username}`,
+          );
+        });
+      }
+      return user;
+    });
+  },
+);
+
 module.exports = userRouter;
