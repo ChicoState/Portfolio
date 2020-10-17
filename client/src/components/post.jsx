@@ -10,29 +10,10 @@ class Post extends Component {
     video_formats: new Set(["mp4", "ogg", "webm"]),
   }
 
-
   render(){
 
-    const deletePost = (postid) => {
-      axios({
-        method: "POST",
-        data: {
-          id: postid,
-        },
-        withCredentials: true,
-        url: "/post/delete",
-      }).then((res) => {
-        if (res.status === 200) {
-          this.setState(prevState => ({
-            posts: prevState.posts.filter(post => post._id !== postid)
-          }));
-        }
-      })
-        .catch((error) => console.log(error));
-    };
-
           let attachment = <div></div>;
-          if (this.props.attachments[0]) {
+          if (this.props.attachments.length > 0) {
             if (this.state.image_formats.has(this.props.attachments[0].split('.').pop().toLowerCase())) {
               attachment = <Card.Img variant="top" className="post-img" src={'/attachment/' + this.props.attachments[0]} />;
             } else if (this.state.audio_formats.has(this.props.attachments[0].split('.').pop().toLowerCase())) {
@@ -59,8 +40,10 @@ class Post extends Component {
             <Card.Text>{this.props.message}</Card.Text>
           </Card.Body>
           <Card.Footer>
-            <small className="text-muted">Stinky Monke</small>
-            <Button variant="secondary" onClick={() => deletePost(this.props.id)}>Delete</Button>
+            <small className="text-muted">{this.props.author}</small>
+            {
+              this.props.delete ? null : <Button variant="secondary" onClick={() => this.props.deleteHandler(this.props.id)}>Delete</Button>
+            }
         </Card.Footer>
       </Card>
     );

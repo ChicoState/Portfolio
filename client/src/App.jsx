@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap';
 import NavigationBar from './components/navigationbar';
-import SocialFeed from './components/socialfeed';
 import './App.css';
 import Routes from './routes/routes';
 import CreatePost from './components/createPost';
-import DisplayPost from './components/displayPost';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
 import GetUserClass from './components/getUser';
+import RecommendedFeed from './components/RecommendedFeed'
+import DisplayPost from './components/displayPost'
+import FollowFeed from './components/FollowFeed';
+import Unfollow from './components/unfollow';
+
 
 class App extends Component {
   constructor(props) {
@@ -43,18 +46,21 @@ class App extends Component {
         {motd}
           </p>
         </div>
-        <CreatePost/>
         <Container className="col-md-8">
           <DisplayPost/>
         </Container>
         <GetUserClass/>
+        <DisplayPost/>
         <UpdateUser/>
         <ChangePassword/>
+        <RecommendedFeed/>
+        <Unfollow/>
+        <FollowFeed/>
         <div className="container">
           <div className="row">
             <div className="col-sm-2"></div>
             <div className="col-sm-8">
-              <SocialFeed></SocialFeed>
+              {/* <SocialFeed></SocialFeed> */}
             </div>
             <div className="col-sm-2"></div>
           </div>

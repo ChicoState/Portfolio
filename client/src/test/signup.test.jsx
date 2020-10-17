@@ -5,5 +5,8 @@ import SignUp from '../components/screens/signup';
 test('sign up test', () => {
   const { getAllByText } = render(<SignUp />);
   const linkElement = getAllByText(/Sign Up/i);
-  expect(linkElement).toBeInTheDocument();
+  var x;
+  for (x of linkElement) {
+    expect(x).toBeInTheDocument();
+  }
 });

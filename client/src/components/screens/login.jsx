@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Button, Form, Modal } from 'react-bootstrap';
-import "bootstrap/dist/css/bootstrap.min.css";
 
 
 

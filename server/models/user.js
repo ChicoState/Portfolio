@@ -49,6 +49,14 @@ const UserSchema = mongoose.Schema({
     index: true,
     max: 1024,
   },
+  followed_users: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  },
 });
 
 UserSchema.plugin(beautifyUnique);
