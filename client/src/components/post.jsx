@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card, Image } from 'react-bootstrap';
 import  axios from 'axios';
-import '../App.css';
+import './post.css';
 
 class Post extends Component {
   state = {
@@ -34,7 +34,7 @@ class Post extends Component {
           let attachment = <div></div>;
           if (this.props.attachments[0]) {
             if (this.state.image_formats.has(this.props.attachments[0].split('.').pop().toLowerCase())) {
-              attachment = <Card.Img variant="top" src={'/attachment/' + this.props.attachments[0]}/>;
+              attachment = <Card.Img variant="top" className="post-img" src={'/attachment/' + this.props.attachments[0]} />;
             } else if (this.state.audio_formats.has(this.props.attachments[0].split('.').pop().toLowerCase())) {
               attachment = 
                 <audio controls src={'/attachment/' + this.props.attachments[0]}>
@@ -50,17 +50,17 @@ class Post extends Component {
           }
 
     return(
-      <Card className="Post">
-        <Card.Header>
-          {attachment}
-        </Card.Header>
-        <Card.Body>
-          <Card.Title>{this.props.title}</Card.Title>
-          <Card.Text>{this.props.message}</Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small className="text-muted">Stinky Monke</small>
-          <Button variant="secondary" onClick={() => deletePost(this.props.id)}>Delete</Button>
+      <Card className="Post col-md-12">
+          <Card.Header>
+            {attachment}
+          </Card.Header>
+          <Card.Body>
+            <Card.Title>{this.props.title}</Card.Title>
+            <Card.Text>{this.props.message}</Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small className="text-muted">Stinky Monke</small>
+            <Button variant="secondary" onClick={() => deletePost(this.props.id)}>Delete</Button>
         </Card.Footer>
       </Card>
     );

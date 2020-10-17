@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Container } from 'react-bootstrap';
+import { Button, CardColumns } from 'react-bootstrap';
 import Post from './post';
 import axios from 'axios';
+import './post.css';
 
 class DisplayPost extends Component {
     state = {
@@ -37,14 +38,14 @@ class DisplayPost extends Component {
 
 
     return(
-      <Container>
+      <CardColumns className="card-columns">
       <Button variant="primary" onClick={getPosts}>Get Posts</Button>
        { this.state.posts ? this.state.posts.map((item) => {
           return(
             <Post title={item.title} message={item.message} attachments={item.attachments} id={item._id} />
           )}) : null
        }
-      </Container>
+      </CardColumns>
     )
   }
 }

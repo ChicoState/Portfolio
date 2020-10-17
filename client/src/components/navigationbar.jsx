@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import logo from '../portfolio_text.jpg';
 import LogoutClass from './logout';
+import '../App.css';
 
 class NavigationBar extends Component {
     render() {
       return (
-        <Navbar className="NavBar" collapseOnSelect  expand="md" >
-          <Navbar.Brand href="/">
+        <Navbar className="NavBar" fixed="top" collapseOnSelect  expand="md" >
+          <Navbar.Brand href="#">
             <img src={logo}  className="App-logo" alt="logo" />
           </Navbar.Brand>
         <Navbar.Toggle />

@@ -44,7 +44,9 @@ class App extends Component {
           </p>
         </div>
         <CreatePost/>
-        <DisplayPost/>
+        <Container className="col-md-8">
+          <DisplayPost/>
+        </Container>
         <GetUserClass/>
         <UpdateUser/>
         <ChangePassword/>
