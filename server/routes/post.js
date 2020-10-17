@@ -11,6 +11,7 @@ const fs = require('fs');
 const hasha = require('hasha');
 const Post = require('../models/post');
 const Attachment = require('../models/attachment');
+const User = require('../models/user.js');
 
 const upload = multer({ dest: path.join(__dirname, '.') });
 
@@ -78,6 +79,22 @@ postRouter.post(
       }
       return res.json(posts);
     });
+  },
+);
+
+postRouter.get(
+  '/follow_feed',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Post.find({
+      user: req.user.followed_users
+    })
+    .exec((err, posts) => {
+      if(err) {
+        return res.status(400).json(err);
+      }
+      return res.json(posts);
+    })
   },
 );
 

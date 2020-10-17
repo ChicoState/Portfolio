@@ -3,11 +3,14 @@ import NavigationBar from './components/navigationbar';
 import SocialFeed from './components/socialfeed';
 import './App.css';
 import Routes from './routes/routes';
-import Post from './components/post';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
 import GetUserClass from './components/getUser';
 import RecommendedFeed from './components/RecommendedFeed'
+import DisplayPost from './components/displayPost'
+import CreatePost from './components/CreatePost'
+import FollowFeed from './components/FollowFeed';
+
 
 class App extends Component {
   constructor(props) {
@@ -42,15 +45,17 @@ class App extends Component {
           </p>
         </div>
         <GetUserClass/>
-        <Post/>
+        <CreatePost/>
+        <DisplayPost/>
         <UpdateUser/>
         <ChangePassword/>
         <RecommendedFeed/>
+        <FollowFeed/>
         <div className="container">
           <div className="row">
             <div className="col-sm-2"></div>
             <div className="col-sm-8">
-              <SocialFeed></SocialFeed>
+              {/* <SocialFeed></SocialFeed> */}
             </div>
             <div className="col-sm-2"></div>
           </div>
