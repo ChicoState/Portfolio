@@ -11,7 +11,6 @@ const fs = require('fs');
 const hasha = require('hasha');
 const Post = require('../models/post');
 const Attachment = require('../models/attachment');
-const User = require('../models/user.js');
 
 const upload = multer({ dest: path.join(__dirname, '.') });
 

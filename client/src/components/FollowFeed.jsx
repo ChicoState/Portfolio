@@ -32,7 +32,7 @@ class FollowFeed extends Component {
                 <CardColumns>
                 { this.state.posts ? this.state.posts.map((item) => {
                     return(
-                        <Post title={item.title} message={item.message} auhtor='temp' attachments={item.attachments} id={item._id} />
+                        <Post title={item.title} message={item.message} auhtor='temp' attachments={item.attachments} id={item._id} delete="false"/>
                     )}) : null
                 }
                 </CardColumns>

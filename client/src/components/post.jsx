@@ -10,27 +10,7 @@ class Post extends Component {
     video_formats: new Set(["mp4", "ogg", "webm"]),
   }
 
-
   render(){
-
-    const deletePost = (postid) => {
-      axios({
-        method: "POST",
-        data: {
-          id: postid,
-        },
-        withCredentials: true,
-        url: "/post/delete",
-      }).then((res) => {
-        if (res.status === 200) {
-          // this.setState(prevState => ({
-          //   posts: prevState.posts.filter(post => post._id !== postid)
-          // })
-          // );
-        }
-      })
-        .catch((error) => console.log(error));
-    };
 
           let attachment = <div></div>;
           if (this.props.attachments.length > 0) {
@@ -61,7 +41,9 @@ class Post extends Component {
           </Card.Body>
           <Card.Footer>
             <small className="text-muted">{this.props.author}</small>
-            <Button variant="secondary" onClick={() => deletePost(this.props.id)}>Delete</Button>
+            {
+              this.props.delete ? null : <Button variant="secondary" onClick={() => this.props.deleteHandler(this.props.id)}>Delete</Button>
+            }
         </Card.Footer>
       </Card>
     );
