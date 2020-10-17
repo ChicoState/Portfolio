@@ -15,20 +15,6 @@ class CreatePost extends Component {
 
     render() {
 
-        const getPosts = () => {
-            axios({
-                method: "POST",
-                withCredentials: true,
-                url: "/post/view",
-            })
-                .then((res) => {
-                    this.setState({ posts: res.data });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        };
-
         const create = () => {
             const postData = new FormData();
             if (this.state.selectedFile) {
@@ -49,12 +35,8 @@ class CreatePost extends Component {
                 },
                 withCredentials: true,
                 url: "/post/create",
-            }).then((res) => {
-                if (res.status === 200) {
-                    getPosts();
-                }
             })
-                .catch((error) => console.log(error));
+            .catch((error) => console.log(error));
         };
 
         return (
@@ -71,7 +53,10 @@ class CreatePost extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.File id="formPostFile" onChange={this.onFileChange} label="Optional file upload" />
-                        <Button variant="primary" type="submit" onClick={create}>
+                        <Button variant="primary" onClick={() => {
+                            create();
+                            this.props.handleCreate();
+                        }}>
                             Post
                     </Button>
                     </Form.Group>

@@ -45,7 +45,6 @@ class App extends Component {
           </p>
         </div>
         <GetUserClass/>
-        <CreatePost/>
         <DisplayPost/>
         <UpdateUser/>
         <ChangePassword/>

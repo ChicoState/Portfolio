@@ -3,6 +3,7 @@ import { Button, CardColumns } from 'react-bootstrap';
 import Post from './post';
 import axios from 'axios';
 import './post.css';
+import CreatePost from './CreatePost'
 // import { delete } from '../../../server/routes/user';
 
 class DisplayPost extends Component {
@@ -23,6 +24,19 @@ class DisplayPost extends Component {
     onFileChange = event => {
         this.setState({ selectedFile: event.target.files[0] });
     };
+    componentDidMount(){
+      return axios({
+        method: "POST",
+        withCredentials: true,
+        url: "/post/view",
+      })
+        .then((res) => {
+          this.setState({posts: res.data});
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
   render(){
     const getPosts = () => {
@@ -60,7 +74,9 @@ class DisplayPost extends Component {
 
 
     return(
-      <CardColumns className="card-columns">
+      <div>
+        <CreatePost handleCreate={getPosts}/>
+        <CardColumns className="card-columns">
       <Button variant="primary" onClick={getPosts}>Get Posts</Button>
         {/* { this.state.posts ? this.state.posts.map(function(item){
             return <Post title={item.title} message={item.message} author='temp' attachments={item.attachments} id={item._id} deleteHandler={this.onDelete}/>
@@ -71,6 +87,9 @@ class DisplayPost extends Component {
           )}) : null
        }
       </CardColumns>
+
+      </div>
+      
     )
   }
 }
