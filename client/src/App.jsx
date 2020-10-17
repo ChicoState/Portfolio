@@ -10,6 +10,7 @@ import RecommendedFeed from './components/RecommendedFeed'
 import DisplayPost from './components/displayPost'
 import CreatePost from './components/CreatePost'
 import FollowFeed from './components/FollowFeed';
+import Unfollow from './components/unfollow';
 
 
 class App extends Component {
@@ -50,6 +51,7 @@ class App extends Component {
         <UpdateUser/>
         <ChangePassword/>
         <RecommendedFeed/>
+        <Unfollow/>
         <FollowFeed/>
         <div className="container">
           <div className="row">
