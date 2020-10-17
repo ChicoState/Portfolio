@@ -87,14 +87,13 @@ postRouter.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Post.find({
-      user: req.user.followed_users
-    })
-    .exec((err, posts) => {
-      if(err) {
+      user: req.user.followed_users,
+    }).exec((err, posts) => {
+      if (err) {
         return res.status(400).json(err);
       }
       return res.json(posts);
-    })
+    });
   },
 );
 

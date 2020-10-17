@@ -168,8 +168,8 @@ userRouter.get(
       'username first_name last_name',
       (err, docs) => {
         if (err) res.status(500).send(err);
-        const userDocs = docs.filter(
-          (user) => req.user.followed_users.includes(user._id),
+        const userDocs = docs.filter((user) =>
+          req.user.followed_users.includes(user._id),
         );
         res.send(userDocs);
       },
