@@ -41,7 +41,9 @@ class Post extends Component {
           </Card.Body>
           <Card.Footer>
             <small className="text-muted">{this.props.author}</small>
-            <Button variant="secondary" onClick={() => this.props.deleteHandler(this.props.id)}>Delete</Button>
+            {
+              this.props.delete ? null : <Button variant="secondary" onClick={() => this.props.deleteHandler(this.props.id)}>Delete</Button>
+            }
         </Card.Footer>
       </Card>
     );
