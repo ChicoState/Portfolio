@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Nav } from 'react-bootstrap';
 import axios from 'axios';
 
 class LogoutClass extends Component {
@@ -26,9 +27,7 @@ class LogoutClass extends Component {
           };
 
         return(
-            <div>
-            <button onClick={logout}>Logout</button>
-            </div>
+            <Nav.Link href="/" onClick={logout}>Logout</Nav.Link>
             );
      }
     

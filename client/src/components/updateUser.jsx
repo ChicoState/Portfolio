@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Container, Form} from 'react-bootstrap';
 import axios from 'axios';
 
 class UpdateUser extends Component {
@@ -37,13 +38,26 @@ class UpdateUser extends Component {
             .catch((error) => console.log(error));
           };
         return(
-            <div>
+            <Container>
                 <h1>Update User Info</h1>
-                <input placeholder={this.state.user.first_name} onChange={e => this.setState({first_name: e.target.value})}></input>
-                <input placeholder={this.state.user.middle_name} onChange={e => this.setState({middle_name: e.target.value})}></input>
-                <input placeholder={this.state.user.last_name} onChange={e => this.setState({last_name: e.target.value})}></input>
-                <button onClick={update}>Submit</button>
-            </div>
+                <Form>
+                  <Form.Group controlId="formUpdateFirst">
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control placeholder={this.state.user.first_name} onChange={e => this.setState({first_name: e.target.value})}/>
+                  </Form.Group>
+                  <Form.Group controlId="formUpdateMiddle">
+                    <Form.Label>Middle Name</Form.Label>
+                    <Form.Control placeholder={this.state.user.middle_name} onChange={e => this.setState({middle_name: e.target.value})}/>
+                  </Form.Group>
+                  <Form.Group controlId="formUpdateLast">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control placeholder={this.state.user.last_name} onChange={e => this.setState({last_name: e.target.value})}/>
+                  </Form.Group>
+                  <Button variant="primary" type="submit" onClick={update}>
+                    Update
+                  </Button>
+                </Form>
+            </Container>
         )
     }
 

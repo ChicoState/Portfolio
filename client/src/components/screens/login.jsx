@@ -1,7 +1,6 @@
-import React, {Component } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import Modal from "react-bootstrap/Modal";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Form, Modal } from 'react-bootstrap';
 
 
 
@@ -11,11 +10,11 @@ class Login extends Component {
     password: "",
     show: true,
   }
-  
-  render(){
+
+  render() {
     //const [show, setShow] = useState(false);
 
-    const handleClose = () => {this.setState({show: false}); this.props.history.push('./')};
+    const handleClose = () => { this.setState({ show: false }); this.props.history.push('./') };
 
 
     const loginUser = () => {
@@ -31,21 +30,27 @@ class Login extends Component {
         console.error(error)
       });
     };
-    return(
-          <div>
-              <Modal show={this.state.show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Login</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <input placeholder='email' onChange={e => this.setState({email: e.target.value})}></input>
-                <input placeholder='password' onChange={e => this.setState({password: e.target.value})}></input>
-                <button onClick= {()=>{loginUser(); handleClose()}}>Submit</button>
-              </Modal.Body>
-              <Modal.Footer>
-              </Modal.Footer>
-            </Modal>
-          </div>
+    return (
+      <div>
+        <Modal show={this.state.show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Login</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control placeholder="Email" onChange={e => this.setState({ email: e.target.value })} />
+                <Form.Label>Password</Form.Label>
+                <Form.Control placeholder="Password" onChange={e => this.setState({ password: e.target.value })} />
+              </Form.Group>
+              <Button type="submit" onClick={() => { loginUser(); handleClose() }}>Submit</Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+          </Modal.Footer>
+        </Modal>
+      </div>
     );
   }
 };

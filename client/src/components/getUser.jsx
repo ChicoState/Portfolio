@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Container } from 'react-bootstrap';
 import axios from 'axios';
 
 class GetUserClass extends Component {
@@ -28,11 +29,11 @@ class GetUserClass extends Component {
         };
 
         return(
-            <div>
+            <Container>
             <h1>Get User</h1>
-            <button onClick={getUser}>Submit</button>
+            <Button variant="primary" onClick={getUser}>Get User</Button>
             {this.state.data ? <h1>Welcome Back {this.state.data.user.username}</h1> : null}
-            </div>
+            </Container>
             );
      }
     
