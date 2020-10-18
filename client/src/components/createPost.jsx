@@ -3,6 +3,9 @@ import { Button, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 class CreatePost extends Component {
+    constructor(props){
+        super(props);
+    }
     state = {
         title: '',
         message: '',
@@ -15,19 +18,6 @@ class CreatePost extends Component {
 
     render() {
 
-        const getPosts = () => {
-            axios({
-                method: "POST",
-                withCredentials: true,
-                url: "/post/view",
-            })
-                .then((res) => {
-                    this.setState({ posts: res.data });
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        };
 
         const create = () => {
             const postData = new FormData();
@@ -49,13 +39,15 @@ class CreatePost extends Component {
                 },
                 withCredentials: true,
                 url: "/post/create",
-            }).then((res) => {
-                if (res.status === 200) {
-                    getPosts();
-                }
             })
-                .catch((error) => console.log(error));
-        };
+            .then(() => {
+                this.props.handleCreate();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+        
 
         return (
             <Container className="col-6">
@@ -71,7 +63,9 @@ class CreatePost extends Component {
                     </Form.Group>
                     <Form.Group>
                         <Form.File id="formPostFile" onChange={this.onFileChange} label="Optional file upload" />
-                        <Button variant="primary" type="submit" onClick={create}>
+                        <Button variant="primary" onClick={() => {
+                            create();
+                        }}>
                             Post
                     </Button>
                     </Form.Group>

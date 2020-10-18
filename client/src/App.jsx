@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import NavigationBar from './components/navigationbar';
 import './App.css';
 import Routes from './routes/routes';
-import CreatePost from './components/createPost';
+import CreatePost from './components/CreatePost';
 import UpdateUser from './components/updateUser';
 import ChangePassword from './components/changePassword'
 import GetUserClass from './components/getUser';
@@ -50,7 +50,6 @@ class App extends Component {
           <DisplayPost/>
         </Container>
         <GetUserClass/>
-        <DisplayPost/>
         <UpdateUser/>
         <ChangePassword/>
         <RecommendedFeed/>

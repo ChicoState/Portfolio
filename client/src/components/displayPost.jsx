@@ -78,9 +78,6 @@ class DisplayPost extends Component {
         <CreatePost handleCreate={getPosts}/>
         <CardColumns className="card-columns">
       <Button variant="primary" onClick={getPosts}>Get Posts</Button>
-        {/* { this.state.posts ? this.state.posts.map(function(item){
-            return <Post title={item.title} message={item.message} author='temp' attachments={item.attachments} id={item._id} deleteHandler={this.onDelete}/>
-        }) : null } */}
        { this.state.posts ? this.state.posts.map((item, index) => {
           return(
             <Post key={index} title={item.title} message={item.message} author='temp' attachments={item.attachments} id={item._id} deleteHandler={deletePost}/>
