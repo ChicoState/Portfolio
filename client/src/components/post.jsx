@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Card, Image } from 'react-bootstrap';
-import  axios from 'axios';
+import { Button, Card } from 'react-bootstrap';
+// import  axios from 'axios';
 import './post.css';
 
 class Post extends Component {
@@ -40,7 +40,7 @@ class Post extends Component {
             <Card.Text>{this.props.message}</Card.Text>
           </Card.Body>
           <Card.Footer>
-            <small className="text-muted">{this.props.author}</small>
+            <small className="text-muted">{this.props.username}</small>
             {
               this.props.delete ? null : <Button variant="secondary" onClick={() => this.props.deleteHandler(this.props.id)}>Delete</Button>
             }

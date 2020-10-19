@@ -24,6 +24,7 @@ postRouter.post(
       message: req.body.message,
       user: req.user._id,
       profession: 'artist',
+      username: req.user.username,
     });
     const promises = req.files.map(async (file) => {
       let fileStream = fs.createReadStream(file.path);

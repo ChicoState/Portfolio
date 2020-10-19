@@ -3,7 +3,7 @@ import { Button, CardColumns } from 'react-bootstrap';
 import Post from './post';
 import axios from 'axios';
 import './post.css';
-import CreatePost from './CreatePost'
+import CreatePost from './createPost'
 // import { delete } from '../../../server/routes/user';
 
 class DisplayPost extends Component {
@@ -80,7 +80,7 @@ class DisplayPost extends Component {
       <Button variant="primary" onClick={getPosts}>Get Posts</Button>
        { this.state.posts ? this.state.posts.map((item, index) => {
           return(
-            <Post key={index} title={item.title} message={item.message} author='temp' attachments={item.attachments} id={item._id} deleteHandler={deletePost}/>
+            <Post key={index} title={item.title} message={item.message} username={item.username} attachments={item.attachments} id={item._id} deleteHandler={deletePost}/>
           )}) : null
        }
       </CardColumns>

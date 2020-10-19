@@ -42,7 +42,7 @@ class Login extends Component {
                 <Form.Label>Email</Form.Label>
                 <Form.Control placeholder="Email" onChange={e => this.setState({ email: e.target.value })} />
                 <Form.Label>Password</Form.Label>
-                <Form.Control placeholder="Password" onChange={e => this.setState({ password: e.target.value })} />
+                <Form.Control placeholder="Password" type="password" onChange={e => this.setState({ password: e.target.value })} />
               </Form.Group>
               <Button type="submit" onClick={() => { loginUser(); handleClose() }}>Submit</Button>
             </Form>

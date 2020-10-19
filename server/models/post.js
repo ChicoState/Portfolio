@@ -29,6 +29,9 @@ const PostSchema = mongoose.Schema({
     required: [true, 'Post must have timestamp'],
     default: Date.now,
   },
+  username: {
+    type: String,
+  }
 });
 
 PostSchema.pre('remove', function (next) {

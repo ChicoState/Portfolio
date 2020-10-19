@@ -29,15 +29,15 @@ class ChangePassword extends Component {
             <Form>
                 <Form.Group controlId="formOldPass">
                     <Form.Label>Old Password</Form.Label>
-                    <Form.Control placeholder="Old password" onChange={e => this.setState({old_password: e.target.value})}/>
+                    <Form.Control placeholder="Old Password" type="password" onChange={e => this.setState({old_password: e.target.value})}/>
                 </Form.Group>
                 <Form.Group controlId="formNewPass">
                     <Form.Label>New Password</Form.Label>
-                    <Form.Control placeholder="New password" onChange={e => this.setState({new_password: e.target.value})}/>
+                    <Form.Control placeholder="New Password" type="password" onChange={e => this.setState({new_password: e.target.value})}/>
                 </Form.Group>
                 <Form.Group controlId="formConfirmNewPass">
                     <Form.Label>Confirm New Password</Form.Label>
-                    <Form.Control placeholder="Confirm New password" onChange={e => this.setState({new_password_confirm: e.target.value})}/>
+                    <Form.Control placeholder="Confirm New Password" type="password" onChange={e => this.setState({new_password_confirm: e.target.value})}/>
                 </Form.Group>
                 <Button variant="primary" type="submit" onClick={update}>
                     Update Password

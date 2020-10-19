@@ -49,7 +49,7 @@ class SignUp extends Component {
                             </Form.Group>
                             <Form.Group controlId="formSignupPassword">
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control placeholder="Password" onChange={e => this.setState({ registerPassword: e.target.value })} />
+                                <Form.Control placeholder="Password" type="password" onChange={e => this.setState({ registerPassword: e.target.value })} />
                             </Form.Group>
                             <Form.Group controlId="formSignupEmail">
                                 <Form.Label>Email</Form.Label>

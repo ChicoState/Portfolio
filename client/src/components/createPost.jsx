@@ -3,9 +3,9 @@ import { Button, Container, Form } from 'react-bootstrap';
 import axios from 'axios';
 
 class CreatePost extends Component {
-    constructor(props){
-        super(props);
-    }
+    // constructor(props){
+    //     super(props);
+    // }
     state = {
         title: '',
         message: '',
@@ -17,7 +17,6 @@ class CreatePost extends Component {
     };
 
     render() {
-
 
         const create = () => {
             const postData = new FormData();
