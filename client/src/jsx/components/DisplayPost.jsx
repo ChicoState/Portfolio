@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Button, CardColumns, Spinner } from 'react-bootstrap';
+import { Button, Spinner, Row } from 'react-bootstrap';
 import Post from './Post';
 import axios from 'axios';
 import '../../css/post.css';
 import CreatePost from './CreatePost'
+import { getUserName } from './Authentication';
 
 class DisplayPost extends Component {
     constructor(props) {
@@ -72,21 +73,20 @@ class DisplayPost extends Component {
         .catch((error) => console.log(error));
     };
 
+    let cur_username = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
 
     return(
       <div>
         <CreatePost handleCreate={getPosts}/>
-        <CardColumns className="card-columns">
       <Button variant="primary" onClick={getPosts}>Get Posts</Button>
-       { this.state.posts ? this.state.posts.map((item, index) => {
+      
+       { this.state.posts ? <Row className="justify-content-center align-items-center"> {this.state.posts.map((item) => {
           return(
-            <Post key={index} title={item.title} message={item.message} username={item.username} attachments={item.attachments} id={item._id} deleteHandler={deletePost}/>
-          )}) : <Spinner animation="border" role="status">
+            <Post key={item._id} title={item.title} message={item.message} username={item.username} attachments={item.attachments} timestamp={item.timestamp} id={item._id} cur_username={cur_username} deleteHandler={deletePost}/>
+          )})} </Row> : <Spinner animation="border" role="status">
                   <span className="sr-only">Loading...</span>
                 </Spinner>
        }
-      </CardColumns>
-
       </div>
       
     )

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {Container, Spinner} from 'react-bootstrap';
+import {Spinner, Row} from 'react-bootstrap';
 import Post from './Post';
+import { getUserName } from './Authentication';
 
 class Feed extends Component {
   state = {
@@ -22,19 +23,43 @@ class Feed extends Component {
   }
 
   render() {
+    const deletePost = (post_id) => {
+        axios({
+          method: "POST",
+          data: {
+            id: post_id,
+          },
+          withCredentials: true,
+          url: "/post/delete",
+        }).then((res) => {
+          if (res.status === 200) {
+            this.setState(prevState => ({
+              posts: prevState.posts.filter(post => post._id !== post_id)
+            })
+            );
+          }
+        })
+          .catch((error) => console.log(error));
+      };
+
+    
+    let cur_username = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
+
     return (
-      <Container className="col-md-8">
+      <Row className="justify-content-center align-items-center">
           {this.state.posts ? (
-            this.state.posts.map((item, index) => {
+            this.state.posts.map((item) => {
               return (
                 <Post
-                  key={index}
+                  key={item._id}
                   title={item.title}
                   message={item.message}
                   username={item.username}
                   attachments={item.attachments}
+                  timestamp={item.timestamp}
                   id={item._id}
-                  delete="false"
+                  cur_username={cur_username}
+                  deleteHandler={deletePost}
                 />
               );
             })
@@ -43,7 +68,7 @@ class Feed extends Component {
               <span className="sr-only">Loading...</span>
             </Spinner>
           )}
-      </Container>
+      </Row>
     );
   }
 }

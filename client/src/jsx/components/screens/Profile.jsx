@@ -9,7 +9,7 @@ class Profile extends Component {
       <div>
         {this.props.cookies &&
         authenticated(this.props.cookies.get('access_token')) ? (
-          <DisplayPost />
+          <DisplayPost cookies={this.props.cookies}/>
         ) : (
           <Redirect to="/" />
         )}

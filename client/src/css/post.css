@@ -17,3 +17,32 @@
         column-count: 3;
     }    
 }
+
+.icon {
+    cursor: pointer;
+}
+
+.card-title {
+    padding: 0.25rem !important;
+    margin: 0 !important;
+ }
+
+ .nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+ }
+
+ video {
+    height: auto;
+    width: 100%;
+    max-width: 35rem;
+}
+
+img {
+    max-height: 25rem;
+    width: auto;
+}
+
+audio {
+    width: 100%;
+}

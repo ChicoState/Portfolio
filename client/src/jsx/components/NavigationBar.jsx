@@ -22,13 +22,13 @@ class NavigationBar extends Component {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <IndexLinkContainer to="/">
+            <IndexLinkContainer key="1" to="/">
               <Nav.Link active={false} eventKey="1">
                 Home
               </Nav.Link>
             </IndexLinkContainer>
           </Nav>
-          <Nav key={this.props.cookies} className="ml-auto">
+          <Nav className="ml-auto">
             {authenticated(this.props.cookies.get('access_token'))
               ? [
                   <IndexLinkContainer key="2" exact to="/profile">
@@ -36,12 +36,12 @@ class NavigationBar extends Component {
                       Profile
                     </Nav.Link>
                   </IndexLinkContainer>,
-                  <IndexLinkContainer key="2" exact to="/account">
+                  <IndexLinkContainer key="3" exact to="/account">
                   <Nav.Link active={false} eventKey="3">
                     Account
                   </Nav.Link>
                 </IndexLinkContainer>,
-                  <IndexLinkContainer key="3" exact to="/logout">
+                  <IndexLinkContainer key="4" exact to="/logout">
                     <Nav.Link active={false} eventKey="4">
                       Logout
                     </Nav.Link>
@@ -49,7 +49,7 @@ class NavigationBar extends Component {
                 ]
               : [
                   <IndexLinkContainer
-                    key="4"
+                    key="5"
                     exact
                     to={{
                       pathname: '/login',

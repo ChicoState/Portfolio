@@ -13,10 +13,10 @@ class Routes extends Component {
     return (
       <div>
         <Switch>
-          <Route exact path="/" children={<Home cookies={this.props.cookies}/>} />
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/login" cookies={this.props.cookies} component={Login} />
-          <Route exact path="/logout" component={Logout} />
+          <Route exact path="/" children={<Home cookies={this.props.cookies}/>}/>
+          <Route exact path="/signup" children={<Signup/>}/>
+          <Route exact path="/login" children={<Login/>} />
+          <Route exact path="/logout" children={<Logout/>} />
           <Route exact path="/profile" children={<Profile cookies={this.props.cookies}/>} />
           <Route exact path="/account" children={<Account cookies={this.props.cookies}/>} />
           <Route component={NotFound} />

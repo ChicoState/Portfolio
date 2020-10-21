@@ -15,7 +15,7 @@ class Home extends Component {
               Welcome back,{' '}
               {getUserName(this.props.cookies.get('access_token'))}
             </h1>
-            <Feed />
+            <Feed cookies={this.props.cookies}/>
             <Follow />
             <RecommendedFeed />
           </div>

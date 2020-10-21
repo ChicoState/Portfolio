@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Button, Container, Form, Modal } from 'react-bootstrap';
+import { Button, Container, Form } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
 class Signup extends Component {
