@@ -31,7 +31,7 @@ const PostSchema = mongoose.Schema({
   },
   username: {
     type: String,
-  }
+  },
 });
 
 PostSchema.pre('remove', function (next) {

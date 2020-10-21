@@ -82,19 +82,15 @@ postRouter.post(
   },
 );
 
-postRouter.get(
-  '/follow_feed',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    Post.find({
-      user: req.user.followed_users,
-    }).exec((err, posts) => {
+postRouter.get('/feed', (req, res) => {
+  Post.find(req.user ? { user: req.user.followed_users } : {}).exec(
+    (err, posts) => {
       if (err) {
         return res.status(400).json(err);
       }
       return res.json(posts);
-    });
-  },
-);
+    },
+  );
+});
 
 module.exports = postRouter;
