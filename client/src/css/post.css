@@ -27,6 +27,11 @@
     margin: 0 !important;
  }
 
+ .card-text {
+    max-height: 10rem;
+    overflow: scroll;
+ }
+
  .nopadding {
     padding: 0 !important;
     margin: 0 !important;

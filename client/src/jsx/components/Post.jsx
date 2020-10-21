@@ -101,13 +101,13 @@ class Post extends Component {
     if (this.props.message.length > 0) {
       message = (
         <Card.Body className="card-title">
-          <Card.Text>{this.props.message}</Card.Text>
+          <Card.Text className="card-text">{this.props.message}</Card.Text>
         </Card.Body>
       );
     }
 
     return (
-      <Card className="mb-4 mx-4" style={{ width: '18rem' }}>
+      <Card className="mb-4 mx-4 shadow-sm" style={{ width: '18rem' }}>
         <Card.Header className="card-title">
           <small className="card-title text-muted float-left">
             {this.props.username}
