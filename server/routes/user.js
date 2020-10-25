@@ -9,11 +9,11 @@ const cors = require('cors');
 const User = require('../models/user');
 
 userRouter.use(cors());
-const signToken = (userID) =>
+const signToken = (id, username) =>
   JWT.sign(
     {
-      iss: `${process.env.SECRET}`,
-      sub: userID,
+      id,
+      username,
     },
     `${process.env.SECRET}`,
     {
@@ -47,8 +47,9 @@ userRouter.post(
   (req, res) => {
     if (req.isAuthenticated()) {
       const { _id, username, role } = req.user;
-      const token = signToken(_id);
-      res.cookie('access_token', token, { httpOnly: true, sameSite: true });
+      console.log(_id);
+      const token = signToken(_id, username);
+      res.cookie('access_token', token, { sameSite: true });
       res.status(200).json({ isAuthenticated: true, user: { username, role } });
     }
   },
@@ -68,7 +69,6 @@ userRouter.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     res.status(200).json({
-      isAuthenticated: true,
       user: {
         username: req.user.username,
         role: req.user.role,
@@ -167,7 +167,10 @@ userRouter.get(
       { _id: { $ne: req.user._id } },
       'username first_name last_name',
       (err, docs) => {
-        if (err) res.status(500).send(err);
+        if (err) {
+          res.status(500).send(err);
+          console.log(err);
+        }
         const userDocs = docs.filter((user) =>
           req.user.followed_users.includes(user._id),
         );

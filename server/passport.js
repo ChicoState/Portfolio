@@ -20,7 +20,7 @@ passport.use(
       secretOrKey: `${process.env.SECRET}`,
     },
     (payload, done) => {
-      User.findById({ _id: payload.sub }, (err, user) => {
+      User.findById({ _id: payload.id }, (err, user) => {
         if (err) {
           return done(err, false);
         }

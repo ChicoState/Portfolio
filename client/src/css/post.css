@@ -1,0 +1,53 @@
+.col-md-12 {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.post-img {
+    max-width: 100%;
+    max-height: max-width * 1;
+}
+
+.card-columns {
+    @include media-breakpoint-only(md){
+        column-count: 1;
+    }    
+
+    @include media-breakpoint-only(lg){
+        column-count: 3;
+    }    
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.card-title {
+    padding: 0.25rem !important;
+    margin: 0 !important;
+ }
+
+ .card-text {
+    max-height: 10rem;
+    overflow: scroll;
+ }
+
+ .nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+ }
+
+ video {
+    height: auto;
+    width: 100%;
+    max-width: 35rem;
+}
+
+img {
+    max-height: 25rem;
+    width: auto;
+}
+
+audio {
+    width: 100%;
+}
