@@ -47,7 +47,6 @@ userRouter.post(
   (req, res) => {
     if (req.isAuthenticated()) {
       const { _id, username, role } = req.user;
-      console.log(_id);
       const token = signToken(_id, username);
       res.cookie('access_token', token, { sameSite: true });
       res.status(200).json({ isAuthenticated: true, user: { username, role } });

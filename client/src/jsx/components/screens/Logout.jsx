@@ -1,24 +1,37 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 
 class Logout extends Component {
-  render() {
-    const logout = () => {
-      axios({
-        method: "GET",
-        withCredentials: true,
-        url: "/user/logout",
+  next = () => {
+    this.props.history.replace(
+      this.props.location.state ? this.props.location.state.from.pathname : '/'
+    );
+  };
+  logout = () => {
+    axios({
+      method: 'GET',
+      withCredentials: true,
+      url: '/user/logout',
+    })
+      .then((res) => {
+        this.next();
       })
-        .then((res) => { return true; })
-        .catch((error) => {
-          return false;
-        });
-    };
-
-    logout();
-    return <Redirect to={'/'}/>
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  componentDidMount() {
+    this.logout();
   }
-
+  render() {
+    return (
+      <div>
+        <h1>Logging out...</h1>
+        <Spinner></Spinner>
+      </div>
+    );
+  }
 }
-export default Logout;
+export default withRouter(Logout);

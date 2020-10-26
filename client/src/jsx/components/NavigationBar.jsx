@@ -61,7 +61,7 @@ class NavigationBar extends Component {
                     </Nav.Link>
                   </IndexLinkContainer>,
                   <IndexLinkContainer
-                    key="5"
+                    key="6"
                     exact
                     to={{
                       pathname: '/signup',
