@@ -23,18 +23,15 @@ const signToken = (id, username) =>
 
 userRouter.post('/register', async (req, res) => {
   const newUser = new User({
-    username: req.body.registerUsername,
-    password: req.body.registerPassword,
-    email: req.body.registerEmail,
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.email,
     role: 'user',
-    first_name: req.body.registerFirstName,
-    middle_name: req.body.registerMiddleName,
-    last_name: req.body.registerLastName,
   });
   newUser
     .save()
     .then(() =>
-      res.send(`User ${req.body.registerUsername} successfully created.`),
+      res.send(`User ${req.body.username} successfully created.`),
     )
     .catch((err) => {
       res.status(400).json(err);

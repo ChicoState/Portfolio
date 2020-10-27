@@ -9,6 +9,7 @@
     "axios": "^0.20.0",
     "bootstrap": "^4.5.2",
     "create-react-app": "^3.4.1",
+    "formik": "^2.2.1",
     "history": "^5.0.0",
     "http-proxy-middleware": "^1.0.5",
     "jwt-decode": "^3.0.0",

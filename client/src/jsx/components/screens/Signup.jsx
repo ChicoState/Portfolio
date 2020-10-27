@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Button, Container, Form } from 'react-bootstrap';
+import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
+import { Formik, Field } from 'formik';
 
 class Signup extends Component {
-  state = {
-    registerUsername: '',
-    registerPassword: '',
-    registerEmail: '',
-    firstregisterFirstNameName: '',
-    registerMiddleName: '',
-    registerLastName: '',
-    show: true,
-  };
-
   render() {
     const next = () => {
       this.props.history.replace(
@@ -23,95 +14,135 @@ class Signup extends Component {
       );
     };
 
-    const register = () => {
-      axios
-        .post('/user/register', {
-          registerUsername: this.state.registerUsername,
-          registerPassword: this.state.registerPassword,
-          registerEmail: this.state.registerEmail,
-          registerFirstName: this.state.registerFirstName,
-          registerMiddleName: this.state.registerMiddleName,
-          registerLastName: this.state.registerLastName,
-          show: true,
-        })
-        .then((res) => {
-          console.log(`statusCode: ${res.statusCode}`);
-          console.log(res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-
     return (
       <Container>
-            <Form>
-              <Form.Group controlId="formSignupUsername">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  placeholder="Username"
-                  onChange={(e) =>
-                    this.setState({ registerUsername: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formSignupPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  placeholder="Password"
-                  type="password"
-                  onChange={(e) =>
-                    this.setState({ registerPassword: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formSignupEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  placeholder="Email"
-                  onChange={(e) =>
-                    this.setState({ registerEmail: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formSignupFirstName">
-                <Form.Label>FirstName</Form.Label>
-                <Form.Control
-                  placeholder="FirstName"
-                  onChange={(e) =>
-                    this.setState({ registerFirstName: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formSignupLastName">
-                <Form.Label>LastName</Form.Label>
-                <Form.Control
-                  placeholder="LastName"
-                  onChange={(e) =>
-                    this.setState({ registerLastName: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="formSignupMiddleName">
-                <Form.Label>MiddleName</Form.Label>
-                <Form.Control
-                  placeholder="MiddleName"
-                  onChange={(e) =>
-                    this.setState({ registerMiddleName: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Button
-                variant="primary"
-                type="submit"
-                onClick={() => {
-                  register();
-                  next();
-                }}
-              >
-                Sign up
-              </Button>
-            </Form>
+        <Formik
+          initialValues={{
+            username: '',
+            email: '',
+            password: '',
+            passwordConfirm: '',
+          }}
+          validateOnBlur={false}
+          validateOnChange={false}
+          onSubmit={(data, { setSubmitting }) => {
+            setSubmitting(true);
+            axios
+              .post('/user/register', data)
+              .then((res) => {
+                console.log(`statusCode: ${res.statusCode}`);
+                console.log(res);
+                setSubmitting(false);
+                next();
+              })
+              .catch((error) => {
+                console.error(error);
+                setSubmitting(false);
+              });
+          }}
+          validate={(values) => {
+            const errors = {};
+
+            if (values.username.length === 0) {
+              errors.username = 'Username is required!';
+            }
+            if (values.password.length === 0) {
+              errors.password = 'Password is required!';
+            }
+
+            const regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
+            if (!values.email.match(regex)) {
+              errors.email = 'Please enter a valid email';
+            }
+            if (values.password !== values.passwordConfirm) {
+              errors.passwordConfirm = 'Password fields do not match!';
+            }
+            return errors;
+          }}
+        >
+          {({
+            values,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+            errors,
+          }) => {
+            return (
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formSignupUsername">
+                  <Form.Label>Username</Form.Label>
+                  <Field
+                    name="username"
+                    isInvalid={errors.username}
+                    placeholder="Username"
+                    type="input"
+                    as={Form.Control}
+                  ></Field>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.username}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formSignupEmail">
+                  <Form.Label>Email</Form.Label>
+                  <Field
+                    isInvalid={errors.email}
+                    name="email"
+                    placeholder="Email"
+                    type="input"
+                    as={Form.Control}
+                  ></Field>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.email}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formSignupPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Field
+                    isInvalid={errors.password}
+                    name="password"
+                    placeholder="Password"
+                    type="password"
+                    as={Form.Control}
+                  ></Field>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formSignupPasswordConfirm">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Field
+                    isInvalid={errors.passwordConfirm}
+                    name="passwordConfirm"
+                    placeholder="Password"
+                    type="password"
+                    as={Form.Control}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.passwordConfirm}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                {isSubmitting ? (
+                  <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                  </Spinner>
+                ) : (
+                  <Button
+                    disabled={isSubmitting}
+                    variant="primary"
+                    type="submit"
+                  >
+                    Sign up
+                  </Button>
+                )}
+
+                <pre>{JSON.stringify(values, null, 2)}</pre>
+                <pre>{JSON.stringify(errors, null, 2)}</pre>
+              </Form>
+            );
+          }}
+        </Formik>
       </Container>
     );
   }
