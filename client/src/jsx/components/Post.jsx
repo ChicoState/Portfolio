@@ -69,7 +69,7 @@ class Post extends Component {
         )
       ) {
         attachment = (
-          <audio controls src={'/attachment/' + this.props.attachments[0]}>
+          <audio controls preload="metadata" src={'/attachment/' + this.props.attachments[0]}>
             Your browser does not support the <code>audio</code> element.
           </audio>
         );
@@ -79,7 +79,7 @@ class Post extends Component {
         )
       ) {
         attachment = (
-          <video controls src={'/attachment/' + this.props.attachments[0]}>
+          <video controls preload="metadata" src={'/attachment/' + this.props.attachments[0] + "#t=0.5"}>
             Your browser does not support the
             <code>video</code> element.
           </video>

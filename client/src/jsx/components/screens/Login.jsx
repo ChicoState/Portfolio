@@ -21,7 +21,7 @@ class Login extends Component {
         },
         withCredentials: true,
         url: "/user/login",
-      }).then((res) => {}).catch(error => {
+      }).then((res) => {next();}).catch(error => {
         console.error(error)
       });
     };
@@ -36,7 +36,7 @@ class Login extends Component {
                 <Form.Label>Password</Form.Label>
                 <Form.Control placeholder="Password" type="password" onChange={e => this.setState({ password: e.target.value })} />
               </Form.Group>
-              <Button type="submit" onClick={() => { login(); next();}}>Submit</Button>
+              <Button onClick={() => { login(); }}>Submit</Button>
             </Form>
           
       </Container>

@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
+const AnonymousStrategy = require('passport-anonymous').Strategy;
 const User = require('./models/user');
 require('dotenv').config();
 
@@ -52,3 +53,5 @@ passport.use(
       }),
   ),
 );
+
+passport.use(new AnonymousStrategy());

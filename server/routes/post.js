@@ -73,24 +73,35 @@ postRouter.post(
   (req, res) => {
     Post.find({
       user: req.body.id ? req.body.id : req.user._id,
-    }).exec((err, posts) => {
-      if (err) {
-        return res.status(400).json(err);
-      }
-      return res.json(posts);
-    });
+    })
+      .sort('-timestamp')
+      .exec((err, posts) => {
+        if (err) {
+          return res.status(400).json(err);
+        }
+        return res.json(posts);
+      });
   },
 );
 
-postRouter.get('/feed', (req, res) => {
-  Post.find(req.user ? { user: req.user.followed_users } : {}).exec(
-    (err, posts) => {
-      if (err) {
-        return res.status(400).json(err);
-      }
-      return res.json(posts);
-    },
-  );
-});
+postRouter.get(
+  '/feed',
+  passport.authenticate(['jwt', 'anonymous'], { session: false }),
+  (req, res) => {
+    let feedUsers = null;
+    if (req.user) {
+      feedUsers = req.user.followed_users;
+      feedUsers.push(req.user._id);
+    }
+    Post.find(feedUsers ? { user: feedUsers } : {})
+      .sort('-timestamp')
+      .exec((err, posts) => {
+        if (err) {
+          return res.status(400).json(err);
+        }
+        return res.json(posts);
+      });
+  },
+);
 
 module.exports = postRouter;
