@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { authenticated } from '../Authentication';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import DisplayPost from '../DisplayPost';
 
 class Profile extends Component {
@@ -9,7 +9,7 @@ class Profile extends Component {
       <div>
         {this.props.cookies &&
         authenticated(this.props.cookies.get('access_token')) ? (
-          <DisplayPost cookies={this.props.cookies}/>
+          <DisplayPost cookies={this.props.cookies} username={this.props.match.params.username}/>
         ) : (
           <Redirect to="/" />
         )}
@@ -18,4 +18,4 @@ class Profile extends Component {
   }
 }
 
-export default Profile;
+export default withRouter(Profile);

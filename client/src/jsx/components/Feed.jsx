@@ -43,7 +43,7 @@ class Feed extends Component {
       };
 
     
-    let cur_username = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
+    let curUsername = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
 
     return (
       <Row className="justify-content-center align-items-center">
@@ -58,8 +58,9 @@ class Feed extends Component {
                   attachments={item.attachments}
                   timestamp={item.timestamp}
                   id={item._id}
-                  cur_username={cur_username}
+                  delete={item.username === curUsername}
                   deleteHandler={deletePost}
+                  link={curUsername ? true : false}
                 />
               );
             })

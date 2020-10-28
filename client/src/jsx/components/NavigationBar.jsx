@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { IndexLinkContainer } from 'react-router-bootstrap';
-import { authenticated } from './Authentication';
+import { getUserName } from './Authentication';
 import '../../css/App.css';
 
 class NavigationBar extends Component {
   render() {
+    let curUsername = null;
+    if (this.props.cookies.get('access_token')) {
+      curUsername = getUserName(this.props.cookies.get('access_token'));
+    }
     return (
       <Navbar
         bg="light"
@@ -29,9 +33,9 @@ class NavigationBar extends Component {
             </IndexLinkContainer>
           </Nav>
           <Nav className="ml-auto">
-            {authenticated(this.props.cookies.get('access_token'))
+            {curUsername
               ? [
-                  <IndexLinkContainer key="2" exact to="/profile">
+                  <IndexLinkContainer key="2" exact to={`/profile/${curUsername}`}>
                     <Nav.Link active={false} eventKey="2">
                       Profile
                     </Nav.Link>

@@ -67,12 +67,12 @@ postRouter.post(
   },
 );
 
-postRouter.post(
-  '/view',
+postRouter.get(
+  '/view/:username',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Post.find({
-      user: req.body.id ? req.body.id : req.user._id,
+      username: req.params.username,
     })
       .sort('-timestamp')
       .exec((err, posts) => {

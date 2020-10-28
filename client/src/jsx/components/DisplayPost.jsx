@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Spinner, Row } from 'react-bootstrap';
+import { Spinner, Row } from 'react-bootstrap';
 import Post from './Post';
 import axios from 'axios';
 import '../../css/post.css';
@@ -27,9 +27,9 @@ class DisplayPost extends Component {
 
     componentDidMount(){
       return axios({
-        method: "POST",
+        method: "GET",
         withCredentials: true,
-        url: "/post/view",
+        url: `/post/view${this.props.username ? '/' + this.props.username : ''}`,  
       })
         .then((res) => {
           this.setState({posts: res.data});
@@ -42,9 +42,9 @@ class DisplayPost extends Component {
   render(){
     const getPosts = () => {
       axios({
-        method: "POST",
+        method: "GET",
         withCredentials: true,
-        url: "/post/view",
+        url: `/post/view${this.props.username ? '/' + this.props.username : ''}`,  
       })
         .then((res) => {
           this.setState({posts: res.data});
@@ -73,16 +73,15 @@ class DisplayPost extends Component {
         .catch((error) => console.log(error));
     };
 
-    let cur_username = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
+    let curUsername = getUserName(this.props.cookies ? this.props.cookies.get('access_token') : null);
 
     return(
       <div>
-        <CreatePost handleCreate={getPosts}/>
-      <Button variant="primary" onClick={getPosts}>Get Posts</Button>
+        { curUsername === this.props.username ? <CreatePost handleCreate={getPosts}/> : null }
       
        { this.state.posts ? <Row className="justify-content-center align-items-center"> {this.state.posts.map((item) => {
           return(
-            <Post key={item._id} title={item.title} message={item.message} username={item.username} attachments={item.attachments} timestamp={item.timestamp} id={item._id} cur_username={cur_username} deleteHandler={deletePost}/>
+            <Post key={item._id} title={item.title} message={item.message} username={item.username} attachments={item.attachments} timestamp={item.timestamp} id={item._id} delete={item.username === curUsername} deleteHandler={deletePost}/>
           )})} </Row> : <Spinner animation="border" role="status">
                   <span className="sr-only">Loading...</span>
                 </Spinner>

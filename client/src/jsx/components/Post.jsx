@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Card} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../css/post.css';
 
@@ -110,9 +111,9 @@ class Post extends Component {
       <Card className="mb-4 mx-4 shadow-sm" style={{ width: '18rem' }}>
         <Card.Header className="card-title">
           <small className="card-title text-muted float-left">
-            {this.props.username}
+    {this.props.link ? <Link to={`/profile/${this.props.username}`}>{this.props.username}</Link> : this.props.username}
           </small>
-          {this.props.cur_username === this.props.username ? (
+          {this.props.delete ? (
             <div className="icon float-right">
               <svg
                 onClick={() => this.props.deleteHandler(this.props.id)}

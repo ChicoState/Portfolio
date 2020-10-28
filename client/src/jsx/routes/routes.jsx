@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
+import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import Home from '../components/screens/Home';
 import Signup from '../components/screens/Signup';
 import Login from '../components/screens/Login';
@@ -7,6 +7,7 @@ import Logout from '../components/screens/Logout';
 import Profile from '../components/screens/Profile';
 import Account from '../components/screens/Account';
 import NotFound from '../components/screens/NotFound';
+import { getUserName } from '../components/Authentication';
 
 class Routes extends Component {
   render() {
@@ -17,7 +18,8 @@ class Routes extends Component {
           <Route exact path="/signup" children={<Signup/>}/>
           <Route exact path="/login" children={<Login/>} />
           <Route exact path="/logout" children={<Logout/>} />
-          <Route exact path="/profile" children={<Profile cookies={this.props.cookies}/>} />
+          <Route exact path="/profile" render={() => (<Redirect to={this.props.cookies && getUserName(this.props.cookies.get('access_token')) ? `/profile/${getUserName(this.props.cookies.get('access_token'))}` : '/login'} />)}/>
+          <Route exact path="/profile/:username" children={<Profile cookies={this.props.cookies}/>} />
           <Route exact path="/account" children={<Account cookies={this.props.cookies}/>} />
           <Route component={NotFound} />
         </Switch>
