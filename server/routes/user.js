@@ -30,9 +30,7 @@ userRouter.post('/register', async (req, res) => {
   });
   newUser
     .save()
-    .then(() =>
-      res.send(`User ${req.body.username} successfully created.`),
-    )
+    .then(() => res.send(`User ${req.body.username} successfully created.`))
     .catch((err) => {
       res.status(400).json(err);
     });
@@ -76,12 +74,25 @@ userRouter.get(
   },
 );
 
+userRouter.get(
+  '/exists/:username',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findOne({ username: req.params.username }, (err, user) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      return res.json({ exists: !!user });
+    });
+  },
+);
+
 userRouter.put(
   '/update/info',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findByIdAndUpdate(req.user._id, req.body, (err, user) => {
-      if (err) return res.status(500).send(err);
+      if (err) return res.status(500).json(err);
       return res.send(user);
     });
   },
@@ -91,9 +102,9 @@ userRouter.put(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user._id, (err, user) => {
-      if (err) return res.status(500).send(err);
+      if (err) return res.status(500).json(err);
       user.comparePassword(req.body.old_password, (error, result) => {
-        if (error) return res.status(500).send(error);
+        if (error) return res.status(500).json(error);
 
         if (!result) {
           return res.send('old password does not match password on record!');
@@ -121,7 +132,7 @@ userRouter.get(
       { _id: { $ne: req.user._id } },
       'username first_name last_name',
       (err, docs) => {
-        if (err) res.status(500).send(err);
+        if (err) res.status(500).json(err);
         const userDocs = docs.filter(
           (user) => !req.user.followed_users.includes(user._id),
         );
@@ -136,7 +147,7 @@ userRouter.post(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user._id, (err, user) => {
-      if (err) return res.status(500).send(err);
+      if (err) return res.status(500).json(err);
       if (!user.followed_users.includes(req.body.follow_user_id)) {
         user.followed_users.push(req.body.follow_user_id);
         user.save((saveError) => {
@@ -164,7 +175,7 @@ userRouter.get(
       'username first_name last_name',
       (err, docs) => {
         if (err) {
-          res.status(500).send(err);
+          res.status(500).json(err);
           console.log(err);
         }
         const userDocs = docs.filter((user) =>
@@ -181,7 +192,7 @@ userRouter.post(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     User.findById(req.user._id, (err, user) => {
-      if (err) return res.status(500).send(err);
+      if (err) return res.status(500).json(err);
       if (user.followed_users.includes(req.body.follow_user_id)) {
         user.followed_users.pull(req.body.follow_user_id);
         user.save((saveError) => {

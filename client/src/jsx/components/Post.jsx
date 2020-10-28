@@ -111,7 +111,7 @@ class Post extends Component {
       <Card className="mb-4 mx-4 shadow-sm" style={{ width: '18rem' }}>
         <Card.Header className="card-title">
           <small className="card-title text-muted float-left">
-    {this.props.link ? <Link to={`/profile/${this.props.username}`}>{this.props.username}</Link> : this.props.username}
+    {this.props.link ? <Link className="user" to={`/profile/${this.props.username}`}>{this.props.username}</Link> : this.props.username}
           </small>
           {this.props.delete ? (
             <div className="icon float-right">

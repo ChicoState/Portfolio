@@ -12,8 +12,8 @@
     cursor: pointer;
 }
 
-a {
-    color:inherit;
+a.user {
+    color: inherit;
  }
 
 .card-title {
