@@ -13,9 +13,11 @@
 ## Running the app
 1. Clone the repo and cd into the repo.
 
-2. Use `server/.env.example` to create a `server/.env` file with your secret and MongoDB credentials.
+2. Copy your Google service account key into `/server`.
 
-3. `docker-compose up`
+3. Use `.env.example` to create a `.env` file with your desired MongoDB and Google Cloud credentials and private secret.
+
+4. `docker-compose up`
 
 Open a browser and navigate to [localhost:3000](localhost:3000)
 

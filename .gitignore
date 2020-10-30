@@ -120,3 +120,6 @@ dist
 *~
 *.swp
 *.swo
+
+# Secret key file
+key.json

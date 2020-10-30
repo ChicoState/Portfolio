@@ -33,10 +33,6 @@ const postRouter = require('./routes/post');
 
 app.use('/post', postRouter);
 
-const attachmentRouter = require('./routes/attachment');
-
-app.use('/attachment', attachmentRouter);
-
 app.listen(3001, () => {
   console.log('Express server is running on localhost:3001');
 });

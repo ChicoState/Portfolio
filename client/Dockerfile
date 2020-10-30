@@ -1,6 +1,6 @@
 FROM node
 
-WORKDIR /app
+WORKDIR /client
 COPY package*.json ./
 COPY .eslint* ./
 RUN npm install

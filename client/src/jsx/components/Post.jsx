@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Card} from 'react-bootstrap';
+import { Card} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import '../../css/post.css';
 
 class Post extends Component {
@@ -28,21 +27,6 @@ class Post extends Component {
   };
 
   render() {
-    const download = (name) => {
-      axios({
-        url: '/attachment/' + name,
-        method: 'GET',
-        responseType: 'blob', // important
-      }).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', name);
-        document.body.appendChild(link);
-        link.click();
-      });
-    };
-
     let title = <div></div>;
     if (this.props.title.length > 0) {
       title = (
@@ -52,48 +36,32 @@ class Post extends Component {
 
     let attachment = <div></div>;
     if (this.props.attachments.length > 0) {
-      if (
-        this.state.image_formats.has(
-          this.props.attachments[0].split('.').pop().toLowerCase()
-        )
-      ) {
+      const attachment_ext = this.props.attachments[0].split('.').pop().toLowerCase(); 
+      const attachment_url = `https://storage.googleapis.com/${process.env.REACT_APP_BUCKET_NAME}/${this.props.attachments[0]}`;
+      if (this.state.image_formats.has(attachment_ext)) {
         attachment = (
           <Card.Img
             variant="top"
             className="post-img"
-            src={'/attachment/' + this.props.attachments[0]}
+            src={attachment_url}
           />
         );
-      } else if (
-        this.state.audio_formats.has(
-          this.props.attachments[0].split('.').pop().toLowerCase()
-        )
-      ) {
+      } else if (this.state.audio_formats.has(attachment_ext)) {
         attachment = (
-          <audio controls preload="metadata" src={'/attachment/' + this.props.attachments[0]}>
+          <audio controls preload="metadata" src={attachment_url}>
             Your browser does not support the <code>audio</code> element.
           </audio>
         );
-      } else if (
-        this.state.video_formats.has(
-          this.props.attachments[0].split('.').pop().toLowerCase()
-        )
-      ) {
+      } else if (this.state.video_formats.has(attachment_ext)) {
         attachment = (
-          <video controls preload="metadata" src={'/attachment/' + this.props.attachments[0] + "#t=0.5"}>
+          <video controls preload="metadata" src={attachment_url + "#t=0.5"}>
             Your browser does not support the
             <code>video</code> element.
           </video>
         );
       } else {
         attachment = (
-          <Button
-            onClick={() => {
-              download(this.props.attachments[0]);
-            }}
-          >
-            Download
-          </Button>
+          <a className="btn btn-info" href={attachment_url} download>Download</a>
         );
       }
     }

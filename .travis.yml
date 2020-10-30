@@ -3,6 +3,8 @@ os: linux
 dist: xenial
 services:
   - docker
+before_script:
+  - touch .env
 jobs:
   include:
     - stage: "Dev"

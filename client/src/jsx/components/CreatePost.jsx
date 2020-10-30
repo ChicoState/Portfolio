@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
+import ReactDOM from 'react-dom';
+import { Button, Container, Form, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 
 class CreatePost extends Component {
@@ -7,6 +8,7 @@ class CreatePost extends Component {
     title: '',
     message: '',
     selectedFile: null,
+    uploading: false,
   };
 
   onFileChange = (event) => {
@@ -26,6 +28,7 @@ class CreatePost extends Component {
       }
       postData.append('title', this.state.title);
       postData.append('message', this.state.message);
+      this.setState({ uploading: true });
       axios({
         method: 'POST',
         data: postData,
@@ -37,6 +40,8 @@ class CreatePost extends Component {
       })
         .then(() => {
           this.props.handleCreate();
+          this.setState({uploading: false, title: '', message: '', selectedFile: null});
+          ReactDOM.findDOMNode(this.form).reset()
         })
         .catch((error) => {
           console.log(error);
@@ -45,7 +50,7 @@ class CreatePost extends Component {
 
     return (
       <Container className="col-6">
-        <Form>
+        <Form ref={form => { this.form = form; } }>
           <Form.Group controlId="formPostTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -69,14 +74,18 @@ class CreatePost extends Component {
               onChange={this.onFileChange}
               label="Optional file upload"
             />
-            <Button
-              variant="primary"
-              onClick={() => {
-                create();
-              }}
-            >
-              Post
-            </Button>
+            {this.state.uploading ? (
+              <Spinner animation="border" />
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  create();
+                }}
+              >
+                Post
+              </Button>
+            )}
           </Form.Group>
         </Form>
       </Container>

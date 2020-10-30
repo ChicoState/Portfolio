@@ -7,12 +7,39 @@ require('../passport.js');
 
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const hasha = require('hasha');
 const Post = require('../models/post');
-const Attachment = require('../models/attachment');
+const bucket = require('../storage');
 
-const upload = multer({ dest: path.join(__dirname, '.') });
+const upload = multer({ storage: multer.memoryStorage() });
+
+const uploadFile = (file) =>
+  new Promise((resolve, reject) => {
+    const hash = hasha(file.buffer, { algorithm: 'md5' });
+    const filename = hash + path.extname(file.originalname);
+    const bucketFile = bucket.file(filename);
+    bucketFile.exists((err, exists) => {
+      if (err || !exists) {
+        const stream = bucketFile.createWriteStream({
+          resumable: false,
+          metadata: {
+            contentDisposition: 'attachment',
+          },
+        });
+        stream.on('finish', () => {
+          resolve(filename);
+        });
+        stream.on('error', (error) => {
+          reject(
+            new Error(`Unable to upload file, something went wrong: ${error}`),
+          );
+        });
+        stream.end(file.buffer);
+      } else {
+        resolve(filename);
+      }
+    });
+  });
 
 postRouter.post(
   '/create',
@@ -27,17 +54,8 @@ postRouter.post(
       username: req.user.username,
     });
     const promises = req.files.map(async (file) => {
-      let fileStream = fs.createReadStream(file.path);
-      const hash = await hasha.fromStream(fileStream, { algorithm: 'md5' });
-      const fileName = hash + path.extname(file.originalname);
-      fileStream = fs.createReadStream(file.path);
-      const existing = await Attachment.findOne({ filename: fileName });
-      if (!existing) {
-        const attachment = new Attachment({ filename: fileName });
-        await attachment.upload(fileStream);
-      }
-      newPost.attachments.push(fileName);
-      fs.unlinkSync(file.path);
+      const filename = await uploadFile(file);
+      newPost.attachments.push(filename);
     });
     await Promise.all(promises);
     newPost

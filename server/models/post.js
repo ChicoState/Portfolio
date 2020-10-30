@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Attachment = require('./attachment');
+const bucket = require('../storage');
 
 const PostSchema = mongoose.Schema({
   title: {
@@ -38,17 +38,12 @@ PostSchema.pre('remove', function (next) {
   for (let i = 0; i < this.attachments.length; i += 1) {
     const attachment = this.attachments[i];
     this.constructor
-      .countDocuments({ attachments: attachment })
-      .exec()
-      .then((count) => {
+      .countDocuments({ attachments: attachment }, (err, count) => {
+        if (err) {
+          console.log(err);
+        }
         if (count <= 1) {
-          Attachment.findOneAndDelete({ filename: attachment })
-            .exec()
-            .then((deleted) => {
-              mongoose.connection.collection('fs.chunks').deleteMany({
-                files_id: deleted._id,
-              });
-            });
+          bucket.file(attachment).delete()
         }
       });
   }
