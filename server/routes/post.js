@@ -89,16 +89,17 @@ postRouter.get(
   '/view/:username',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    Post.find({
-      username: req.params.username,
+    Post.paginate({
+      query: {
+        username: req.params.username,
+      },
+      paginatedField: 'timestamp',
+      limit: parseInt(req.query.limit, 10),
+      next: req.query.next,
+      previous: req.query.previous,
     })
-      .sort('-timestamp')
-      .exec((err, posts) => {
-        if (err) {
-          return res.status(400).json(err);
-        }
-        return res.json(posts);
-      });
+      .then((posts) => res.json(posts))
+      .catch((err) => res.status(400).json(err));
   },
 );
 
@@ -106,19 +107,25 @@ postRouter.get(
   '/feed',
   passport.authenticate(['jwt', 'anonymous'], { session: false }),
   (req, res) => {
-    let feedUsers = null;
+    let feedQuery = {};
     if (req.user) {
-      feedUsers = req.user.followed_users;
+      const feedUsers = req.user.followed_users;
       feedUsers.push(req.user._id);
+      feedQuery = {
+        user: {
+          $in: req.user.followed_users,
+        },
+      };
     }
-    Post.find(feedUsers ? { user: feedUsers } : {})
-      .sort('-timestamp')
-      .exec((err, posts) => {
-        if (err) {
-          return res.status(400).json(err);
-        }
-        return res.json(posts);
-      });
+    Post.paginate({
+      query: feedQuery,
+      paginatedField: 'timestamp',
+      limit: parseInt(req.query.limit, 10),
+      next: req.query.next,
+      previous: req.query.previous,
+    })
+      .then((posts) => res.json(posts))
+      .catch((err) => res.status(400).json(err));
   },
 );
 

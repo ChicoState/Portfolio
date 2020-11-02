@@ -18,26 +18,9 @@ import Unfollow from './components/Unfollow';
 class App extends Component {
   render() {
     return (
-      <div className="content">
+      <div className="content" style={{height: "101vh"}}>
         <NavigationBar cookies={this.props.cookies} location={this.props.location}/>
         <Routes cookies={this.props.cookies}/>
-        {/*}
-          <Container className="col-md-8">
-            <DisplayPost/>
-          </Container>
-          <GetUserClass/>
-          <UpdateName/>
-          <UpdatePassword/>
-          <RecommendedFeed/>
-          <Unfollow/>
-          <FollowFeed/>
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-2"></div>
-              <div className="col-sm-2"></div>
-            </div>
-          </div>
-          */}
       </div>
     );
   }

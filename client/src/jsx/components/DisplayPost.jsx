@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Spinner, Row } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
 import Post from './Post';
 import axios from 'axios';
 import '../../css/post.css';
 import CreatePost from './CreatePost';
 import { getUserName } from './Authentication';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 class DisplayPost extends Component {
   constructor(props) {
@@ -13,7 +14,9 @@ class DisplayPost extends Component {
       data: '',
       title: '',
       message: '',
-      posts: '',
+      posts: null,
+      next: null,
+      hasNext: false,
       image_formats: new Set([
         'apng',
         'bmp',
@@ -41,58 +44,42 @@ class DisplayPost extends Component {
     this.setState({ selectedFile: event.target.files[0] });
   };
 
-  componentDidMount() {
+  fetchPosts(next) {
     return axios({
       method: 'GET',
       withCredentials: true,
-      url: `/post/view${
-        this.props.username ? '/' + this.props.username : ''
-      }`,
+      url: `/post/view${this.props.username ? '/' + this.props.username : ''}`,
+      params: {
+        limit: 20,
+        next: next,
+      },
     })
       .then((res) => {
-        this.setState({ posts: res.data });
+        this.setState({
+          posts: this.state.posts
+            ? this.state.posts.concat(res.data.results)
+            : res.data.results,
+          next: res.data.next,
+          hasNext: res.data.hasNext,
+        });
       })
       .catch((error) => {
         console.log(error);
-      }); 
+      });
+  }
+
+  componentDidMount() {
+    this.fetchPosts(null);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.username !== prevProps.username) {
       this.setState({ posts: null });
-      return axios({
-        method: 'GET',
-        withCredentials: true,
-        url: `/post/view${
-          this.props.username ? '/' + this.props.username : ''
-        }`,
-      })
-        .then((res) => {
-          this.setState({ posts: res.data });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.fetchPosts(null);
     }
   }
 
   render() {
-    const getPosts = () => {
-      axios({
-        method: 'GET',
-        withCredentials: true,
-        url: `/post/view${
-          this.props.username ? '/' + this.props.username : ''
-        }`,
-      })
-        .then((res) => {
-          this.setState({ posts: res.data });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-
     const deletePost = (post_id) => {
       axios({
         method: 'POST',
@@ -119,15 +106,26 @@ class DisplayPost extends Component {
     return (
       <div>
         {curUsername === this.props.username ? (
-          <CreatePost handleCreate={getPosts} />
+          <CreatePost handleCreate={() => {this.setState({ posts: null}); this.fetchPosts(null);}} />
         ) : null}
 
         {this.state.posts ? (
-          <Row className="justify-content-center align-items-center">
-            {' '}
+          <InfiniteScroll
+            dataLength={this.state.posts.length}
+            next={this.fetchPosts.bind(this, this.state.next)}
+            hasMore={this.state.hasNext}
+            className="justify-content-center align-items-center row"
+            loader={
+              <div className="col-sm-12">
+                <Spinner animation="border" />
+              </div>
+            }
+            scrollThreshold="80%"
+          >
             {this.state.posts.map((item) => {
               return (
                 <Post
+                  className="col-sm"
                   key={item._id}
                   title={item.title}
                   message={item.message}
@@ -137,10 +135,11 @@ class DisplayPost extends Component {
                   id={item._id}
                   delete={item.username === curUsername}
                   deleteHandler={deletePost}
+                  link={false}
                 />
               );
-            })}{' '}
-          </Row>
+            })}
+          </InfiniteScroll>
         ) : (
           <Spinner animation="border" role="status">
             <span className="sr-only">Loading...</span>

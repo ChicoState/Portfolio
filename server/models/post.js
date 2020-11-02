@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const MongoPaging = require('mongo-cursor-pagination');
 const bucket = require('../storage');
 
 const PostSchema = mongoose.Schema({
@@ -37,17 +38,21 @@ const PostSchema = mongoose.Schema({
 PostSchema.pre('remove', function (next) {
   for (let i = 0; i < this.attachments.length; i += 1) {
     const attachment = this.attachments[i];
-    this.constructor
-      .countDocuments({ attachments: attachment }, (err, count) => {
+    this.constructor.countDocuments(
+      { attachments: attachment },
+      (err, count) => {
         if (err) {
           console.log(err);
         }
         if (count <= 1) {
-          bucket.file(attachment).delete()
+          bucket.file(attachment).delete();
         }
-      });
+      },
+    );
   }
   next();
 });
+
+PostSchema.plugin(MongoPaging.mongoosePlugin);
 
 module.exports = mongoose.model('Post', PostSchema);
