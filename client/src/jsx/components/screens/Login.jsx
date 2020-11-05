@@ -6,7 +6,13 @@ import { Formik, Field } from 'formik';
 
 class Login extends Component {
   render() {
-    const next = () => {this.props.history.replace(this.props.location.state ? this.props.location.state.from.pathname : '/');}
+    const next = () => {
+      this.props.history.replace(
+        this.props.location.state
+          ? this.props.location.state.from.pathname
+          : '/'
+      );
+    };
 
     return (
       <Container>
@@ -33,9 +39,14 @@ class Login extends Component {
                 next();
               })
               .catch((error) => {
-                setErrors({login: 'Invalid username or password!'});
                 setSubmitting(false);
-                console.error(error);
+                axios({
+                  method: 'GET',
+                  withCredentials: true,
+                  url: '/user/login',
+                }).then((res) => {
+                  setErrors({login: res.data});
+                });
               });
           }}
           validate={(values) => {
@@ -61,11 +72,11 @@ class Login extends Component {
           }) => {
             return (
               <Form onSubmit={handleSubmit}>
-                {
-                  errors.login ? <Alert variant="danger">
-                  <Alert.Heading>{errors.login}</Alert.Heading>
-                </Alert> : null
-                }
+                {errors.login ? (
+                  <Alert variant="danger">
+                    <Alert.Heading>{errors.login}</Alert.Heading>
+                  </Alert>
+                ) : null}
                 <Form.Group>
                   <Form.Label>Email</Form.Label>
                   <Field

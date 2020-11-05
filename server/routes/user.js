@@ -1,6 +1,9 @@
 require('dotenv').config();
 require('../passport.js');
+
+const flash = require('connect-flash');
 const express = require('express');
+const session = require('express-session');
 
 const userRouter = express.Router();
 const passport = require('passport');
@@ -9,6 +12,9 @@ const cors = require('cors');
 const User = require('../models/user');
 
 userRouter.use(cors());
+userRouter.use(flash());
+userRouter.use(session({ cookie: { maxAge: 60000 }, secret: 'tesla123', resave: false, saveUninitialized: true}));
+
 const signToken = (id, username) =>
   JWT.sign(
     {
@@ -36,9 +42,16 @@ userRouter.post('/register', async (req, res) => {
     });
 });
 
+userRouter.get('/login', (req, res) => {
+  res.send(req.flash('error'));
+});
+
 userRouter.post(
   '/login',
-  passport.authenticate('local', { session: false }),
+  passport.authenticate('local', {
+    session: false,
+    failureFlash: true,
+  }),
   (req, res) => {
     if (req.isAuthenticated()) {
       const { _id, username, role } = req.user;
