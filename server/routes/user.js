@@ -13,7 +13,14 @@ const User = require('../models/user');
 
 userRouter.use(cors());
 userRouter.use(flash());
-userRouter.use(session({ cookie: { maxAge: 60000 }, secret: 'tesla123', resave: false, saveUninitialized: true}));
+userRouter.use(
+  session({
+    cookie: { maxAge: 60000 },
+    secret: 'tesla123',
+    resave: false,
+    saveUninitialized: true,
+  }),
+);
 
 const signToken = (id, username) =>
   JWT.sign(

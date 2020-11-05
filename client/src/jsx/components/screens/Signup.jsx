@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Button, Container, Form, Spinner } from 'react-bootstrap';
+import { Button, Container, Form, Spinner, Alert } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { Formik, Field } from 'formik';
 
@@ -25,7 +25,7 @@ class Signup extends Component {
           }}
           validateOnBlur={false}
           validateOnChange={false}
-          onSubmit={(data, { setSubmitting }) => {
+          onSubmit={(data, { setSubmitting, setErrors }) => {
             setSubmitting(true);
             axios
               .post('/user/register', data)
@@ -36,7 +36,12 @@ class Signup extends Component {
                 next();
               })
               .catch((error) => {
-                console.error(error);
+                if(error.response.data.errors.username){
+                  setErrors({ username: 'This username is already taken!'});
+                }
+                if(error.response.data.errors.email){
+                  setErrors({ email: 'This email is already taken!'});
+                }
                 setSubmitting(false);
               });
           }}
