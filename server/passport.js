@@ -23,12 +23,12 @@ passport.use(
     (payload, done) => {
       User.findById({ _id: payload.id }, (err, user) => {
         if (err) {
-          return done(err, false);
+          return done(err, false, { message: 'Internal server error' });
         }
         if (user) {
           return done(null, user);
         }
-        return done(null, false);
+        return done(null, false, { message: 'Failed to authenticate User!' });
       });
     },
   ),
@@ -42,11 +42,11 @@ passport.use(
       User.findOne({ email }, (err, user) => {
         // something went wrong with database
         if (err) {
-          return done(err);
+          return done(err, { message: 'Internal server error' });
         }
         // if no user exist
         if (!user) {
-          return done(null, false);
+          return done(null, false, { message: 'User not found!' });
         }
         // check if password is correct
         return user.comparePassword(password, done);

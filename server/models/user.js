@@ -80,7 +80,7 @@ UserSchema.methods.comparePassword = function (password, cb) {
       return cb(err);
     }
     if (!isMatch) {
-      return cb(null, isMatch);
+      return cb(null, isMatch, { message: 'Invalid password' });
     }
     return cb(null, this);
   });
