@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { authenticated } from '../Authentication';
 import { Redirect, withRouter } from 'react-router-dom';
+import ProfileHeader from '../ProfileHeader';
 import { Spinner } from 'react-bootstrap';
 import DisplayPost from '../DisplayPost';
 import NotFound from './NotFound';
@@ -32,10 +33,13 @@ class Profile extends Component {
       return <Redirect to="/login" />;
     } else if (this.state.exists) {
       return (
-        <DisplayPost
-          cookies={this.props.cookies}
-          username={this.props.match.params.username}
-        />
+        <div>
+          <ProfileHeader cookies={this.props.cookies} pageUsername={this.props.match.params.username} />
+          <DisplayPost
+            cookies={this.props.cookies}
+            username={this.props.match.params.username}
+          />
+        </div>
       );
     } else if (this.state.exists === null) {
       return <Spinner />;

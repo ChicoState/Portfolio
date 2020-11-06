@@ -16,8 +16,8 @@ class Home extends Component {
               {getUserName(this.props.cookies.get('access_token'))}
             </h1>
             <Feed cookies={this.props.cookies}/>
-            <Follow />
-            <RecommendedFeed />
+            {/* { <Follow /> } */}
+            {/* { <RecommendedFeed /> } */}
           </div>
         ) : (
           <div>
