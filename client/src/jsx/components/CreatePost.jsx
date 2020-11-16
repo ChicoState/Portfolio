@@ -7,6 +7,7 @@ class CreatePost extends Component {
   state = {
     title: '',
     message: '',
+    tags: ['Other'],
     selectedFile: null,
     uploading: false,
   };
@@ -15,7 +16,10 @@ class CreatePost extends Component {
     this.setState({ selectedFile: event.target.files[0] });
   };
 
+  
+
   render() {
+
     const create = () => {
       const postData = new FormData();
       if (this.state.selectedFile) {
@@ -28,6 +32,7 @@ class CreatePost extends Component {
       }
       postData.append('title', this.state.title);
       postData.append('message', this.state.message);
+      postData.append('tags', this.state.tags)
       this.setState({ uploading: true });
       axios({
         method: 'POST',
@@ -67,6 +72,16 @@ class CreatePost extends Component {
               placeholder="Enter message"
               onChange={(e) => this.setState({ message: e.target.value })}
             />
+          </Form.Group>
+          <Form.Group>
+          <Form.Label>Tags</Form.Label>
+            <Form.Control
+              as = "textarea"
+              rows = "4"
+              placeholder="Ex: Art, Photography, Music, Video"
+              onChange={(e) => this.setState({ tags: e.target.value })}
+            >
+            </Form.Control>
           </Form.Group>
           <Form.Group>
             <Form.File

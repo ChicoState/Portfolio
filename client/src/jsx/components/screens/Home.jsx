@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import Feed from '../Feed';
-import Follow from '../Follow';
-import RecommendedFeed from '../RecommendedFeed';
 import { authenticated, getUserName } from '../Authentication';
 
 class Home extends Component {
