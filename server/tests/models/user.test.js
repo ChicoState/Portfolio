@@ -37,6 +37,17 @@ describe('User Model Test', () => {
     mongoose.connection.close();
   });
 
+  afterEach(async () => {
+    // Clear all mock calls after every test
+    jest.clearAllMocks();
+
+    // Clear all database data after every test
+    const { collections } = mongoose.connection;
+    for (const key in collections) {
+      const collection = collections[key];
+      await collection.deleteMany();
+    }
+  });
   // Valid user creation
   it('Create and save user successfully', async () => {
     const validUser = new UserModel(userData);

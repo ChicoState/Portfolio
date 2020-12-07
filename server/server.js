@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(cors());
 require('dotenv').config();
 
+module.exports = app;
+
 mongoose.connect(
   `${process.env.MONGO_URL}`,
   {
