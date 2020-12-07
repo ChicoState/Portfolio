@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-
+// DEPRECATED
 export default class RecommendedFeed extends Component {
     state = {
         users: '',
@@ -34,13 +34,13 @@ export default class RecommendedFeed extends Component {
             });
         };
 
-        const followUser = (user_id) => {
+        const followUser = (username) => {
             axios({
                 method: "POST",
                 withCredentials: true,
                 url: "/user/follow",
                 data:{
-                    follow_user_id: user_id,
+                    followee_username: username,
                 }
             })
             .then((res) => {
@@ -57,7 +57,7 @@ export default class RecommendedFeed extends Component {
                 <ul>
                 {
                     this.state.users ? this.state.users.map((item) => {
-                    return <li key={item._id}>{item.username} {item.first_name} {item.last_name}<button type="button" onClick={() => followUser(item._id)}>Follow</button></li>;
+                    return <li key={item._id}>{item.username} {item.first_name} {item.last_name}<button type="button" onClick={() => followUser(item.username)}>Follow</button></li>;
                     }) : null
                 }
                 </ul>

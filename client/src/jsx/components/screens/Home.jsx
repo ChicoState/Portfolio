@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import Feed from '../Feed';
-import Follow from '../Follow';
-import RecommendedFeed from '../RecommendedFeed';
 import { authenticated, getUserName } from '../Authentication';
 
 class Home extends Component {
@@ -16,8 +14,8 @@ class Home extends Component {
               {getUserName(this.props.cookies.get('access_token'))}
             </h1>
             <Feed cookies={this.props.cookies}/>
-            <Follow />
-            <RecommendedFeed />
+            {/* { <Follow /> } */}
+            {/* { <RecommendedFeed /> } */}
           </div>
         ) : (
           <div>

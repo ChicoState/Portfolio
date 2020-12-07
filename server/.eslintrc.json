@@ -23,6 +23,9 @@
       "implicit-arrow-linebreak": "off",
       "function-paren-newline": "off",
       "no-underscore-dangle": [2, {"allow": ["_id"]}],
-      "no-param-reassign": "off"
+      "no-param-reassign": "off",
+      "consistent-return": "off",
+      "no-plusplus": "off",
+      "operator-linebreak": "off"
     }
 }

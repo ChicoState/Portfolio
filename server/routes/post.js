@@ -50,7 +50,7 @@ postRouter.post(
       title: req.body.title,
       message: req.body.message,
       user: req.user._id,
-      profession: 'artist',
+      tags: req.body.tags.replace(/\s+/g, '').split(','),
       username: req.user.username,
     });
     const promises = req.files.map(async (file) => {
@@ -126,6 +126,53 @@ postRouter.get(
     })
       .then((posts) => res.json(posts))
       .catch((err) => res.status(400).json(err));
+  },
+);
+
+postRouter.get(
+  '/discovery',
+  passport.authenticate(['jwt', 'anonymous'], { session: false }),
+  (req, res) => {
+    const searchArray = req.query.tags.replace(/\s+/g, '').split(',');
+    const regex = searchArray.map((element) => new RegExp(element, 'i'));
+    let feedQuery = {};
+    feedQuery = {
+      $or: [
+        {
+          username: {
+            $in: regex,
+          },
+        },
+        {
+          tags: {
+            $in: regex,
+          },
+        },
+        {
+          title: {
+            $in: regex,
+          },
+        },
+        {
+          message: {
+            $in: regex,
+          },
+        },
+      ],
+    };
+    Post.paginate({
+      query: feedQuery,
+      paginatedField: 'timestamp',
+      limit: parseInt(req.query.limit, 10),
+      next: req.query.next,
+      previous: req.query.previous,
+    })
+      .then((posts) => {
+        res.json(posts);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
   },
 );
 

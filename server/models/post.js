@@ -6,10 +6,12 @@ const PostSchema = mongoose.Schema({
   title: {
     type: String,
     max: 70,
+    index: true,
   },
   message: {
     type: String,
     max: 1024,
+    index: true,
   },
   attachments: [
     {
@@ -21,10 +23,14 @@ const PostSchema = mongoose.Schema({
     ref: 'User',
     required: [true, 'Post must have a user'],
   },
-  profession: {
-    type: String,
-    enum: ['artist', 'painter', 'photographer'],
-  },
+  tags: [
+    {
+      type: String,
+      required: [true, 'Post must have a tag'],
+      default: 'Other',
+      index: true,
+    },
+  ],
   timestamp: {
     type: Date,
     required: [true, 'Post must have timestamp'],
@@ -32,6 +38,7 @@ const PostSchema = mongoose.Schema({
   },
   username: {
     type: String,
+    index: true,
   },
 });
 
