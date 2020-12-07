@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const MongoPaging = require('mongo-cursor-pagination');
-const bucket = require('../storage');
+const helpers = require('./helpers')
 
 const PostSchema = mongoose.Schema({
   title: {
@@ -49,10 +49,10 @@ PostSchema.pre('remove', function (next) {
       { attachments: attachment },
       (err, count) => {
         if (err) {
-          console.log(err);
+          console.error(err);
         }
         if (count <= 1) {
-          bucket.file(attachment).delete();
+          helpers.deleteAttachment(attachment);
         }
       },
     );
