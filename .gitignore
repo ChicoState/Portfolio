@@ -123,3 +123,6 @@ dist
 
 # Secret key file
 key.json
+
+# Testing config file
+globalConfig.json
