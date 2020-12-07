@@ -26,6 +26,10 @@
       "no-param-reassign": "off",
       "consistent-return": "off",
       "no-plusplus": "off",
-      "operator-linebreak": "off"
+      "operator-linebreak": "off",
+      "no-await-in-loop": "off",
+      "no-restricted-syntax": "off",
+      "guard-for-in": "off",
+      "object-shorthand": "off"
     }
 }

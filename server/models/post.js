@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const MongoPaging = require('mongo-cursor-pagination');
-const helpers = require('./helpers')
+const helpers = require('./helpers');
 
 const PostSchema = mongoose.Schema({
   title: {

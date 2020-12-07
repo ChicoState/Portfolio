@@ -56,10 +56,10 @@ describe('Post Model Test', () => {
     jest.clearAllMocks();
 
     // Clear all database data after every test
-    const collections = mongoose.connection.collections;
+    const { collections } = mongoose.connection;
     for (const key in collections) {
-        const collection = collections[key];
-        await collection.deleteMany();
+      const collection = collections[key];
+      await collection.deleteMany();
     }
   });
 
@@ -99,17 +99,21 @@ describe('Post Model Test', () => {
   it('Delete post with unique attachment should delete attachment', async () => {
     const validPost = new Post(postData);
     const savedPost = await validPost.save();
-    const deleteAttachmentStub = jest.spyOn(helpers, 'deleteAttachment').mockImplementation();
+    const deleteAttachmentStub = jest
+      .spyOn(helpers, 'deleteAttachment')
+      .mockImplementation();
     deleteAttachmentStub.mockClear();
-    await savedPost.delete();        
+    await savedPost.delete();
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(1);
   });
-  
+
   it('Delete post with non-unique attachment should not delete attachment', async () => {
     const validPost = new Post(postData);
     const savedPost = await validPost.save();
     await new Post(postData).save();
-    const deleteAttachmentStub = jest.spyOn(helpers, 'deleteAttachment').mockImplementation();
+    const deleteAttachmentStub = jest
+      .spyOn(helpers, 'deleteAttachment')
+      .mockImplementation();
     deleteAttachmentStub.mockClear();
     await savedPost.delete();
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(0);

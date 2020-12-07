@@ -78,7 +78,6 @@ describe('User Model Test', () => {
     );
   });
 
-
   it('User missing a username', async () => {
     const invalidUser = new UserModel({
       email: 'b@mail.com',
@@ -95,7 +94,6 @@ describe('User Model Test', () => {
     expect(err.errors.username).toBeDefined();
   });
 
-
   it('Two users with the same username', async () => {
     const validData = {
       username: 'copy',
@@ -104,7 +102,7 @@ describe('User Model Test', () => {
       role: 'user',
     };
     const validUser = new UserModel(validData);
-    savedUser = await validUser.save();
+    const savedUser = await validUser.save();
     expect(savedUser._id).toBeDefined();
     expect(savedUser.username).toBe(validData.username);
     expect(savedUser.email).toBe(validData.email);
@@ -121,7 +119,6 @@ describe('User Model Test', () => {
     }
     expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
   });
-
 
   it('User with non-existent field', async () => {
     const extraData = {
