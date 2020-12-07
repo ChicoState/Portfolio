@@ -88,8 +88,7 @@ describe('Post Model Test', () => {
     const postWithoutUser = new Post(PostDataWithoutUser);
     let err;
     try {
-      const savedPostWithoutUser = await postWithoutUser.save();
-      error = savedPostWithoutUser;
+      await postWithoutUser.save();
     } catch (error) {
       err = error;
     }

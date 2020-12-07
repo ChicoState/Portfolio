@@ -22,7 +22,7 @@
       "func-names": "off",
       "implicit-arrow-linebreak": "off",
       "function-paren-newline": "off",
-      "no-underscore-dangle": [2, {"allow": ["_id"]}],
+      "no-underscore-dangle": [2, {"allow": ["_id", "__MONGO_URI__"]}],
       "no-param-reassign": "off",
       "consistent-return": "off",
       "no-plusplus": "off",
