@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const app = require('../../server'); // Link to your server file
+const request = require('supertest');
 const UserModel = require('../../models/user');
 
 const userData = {
@@ -31,11 +32,6 @@ describe('User Model Test', () => {
         }
       },
     );
-    const { collections } = mongoose.connection;
-    for (const key in collections) {
-      const collection = collections[key];
-      await collection.deleteMany();
-    }
   });
 
   afterAll(async () => {
@@ -53,40 +49,47 @@ describe('User Model Test', () => {
       await collection.deleteMany();
     }
   });
+
   // Valid user creation
   it('Create and save user successfully', async () => {
+    const agent = request.agent(app);
     const validUser = new UserModel(userData);
     const savedUser = await validUser.save();
-    expect(savedUser._id).toBeDefined();
-    expect(savedUser.username).toBe(userData.username);
-    expect(savedUser.email).toBe(userData.email);
-    expect(savedUser.role).toBe(userData.role);
-    expect(savedUser.first_name).toBe(userData.first_name);
-    expect(savedUser.middle_name).toBe(userData.middle_name);
-    expect(savedUser.last_name).toBe(userData.last_name);
-    expect(savedUser.public).toBe(userData.public);
-    expect(savedUser.followed_users).toEqual(
-      expect.objectContaining(userData.followed_users),
-    );
-    expect(savedUser.pending_followers).toEqual(
-      expect.objectContaining(userData.pending_followers),
-    );
-    expect(bcrypt.compareSync(userData.password, savedUser.password)).toBe(
-      true,
-    );
+    const login = await agent
+    .post('/user/login')
+    .send({
+        email: userData.email,
+        password: userData.password,
+    })
+    /*
+    const response = await agent
+        .post('/post/create')
+        .send({  
+        title: 'title',
+        message: 'message',
+        attachments: ['attachment.txt'],
+        user: savedUser,
+        tags: ['tag'],
+        timestamp: new Date(),
+        username: savedUser.username,})
+        */
+    const response = await agent
+        .get('/post/view/' + userData.username)
+    console.log(response);
+    expect(response.status).toEqual(200);
   });
 
   
 });
-
-
-
-
 // const mongoose = require('mongoose');
 // const app = require('../../server'); // Link to your server file
 // const supertest = require('supertest');
 // const bcrypt = require('bcryptjs');
 // const request = supertest(app);
+
+
+
+
 
 // const UserModel = require('../../models/user');
 // //const user = require('../../models/user');
@@ -152,24 +155,7 @@ describe('User Model Test', () => {
 //   //need to mock out 1 user to test with
 // //   it('Should create post',  async done => {
 // //     const user1 = new UserModel(userData).save();
-// //     const login = await request
-// //         .post('/user/login')
-// //         .send({
-// //             email: 'test@nuts.com',
-// //             password: 'password',
-// //         })
-// //     const response = await request
-// //         .post('/post/create')
-// //         .send({  
-// //         title: 'title',
-// //         message: 'message',
-// //         attachments: ['attachment.txt'],
-// //         user:login,
-// //         tags: ['tag'],
-// //         timestamp: new Date(),
-// //         username: 'username',})
-// //     expect(response).toEqual(401);
-// //     done();
+   
 // //   });
 
 //   //Gets a list of the feed. Since it's a json return 
