@@ -6,7 +6,13 @@ import { Formik, Field } from 'formik';
 
 class Login extends Component {
   render() {
-    const next = () => {this.props.history.replace(this.props.location.state ? this.props.location.state.from.pathname : '/');}
+    const next = () => {
+      this.props.history.replace(
+        this.props.location.state
+          ? this.props.location.state.from.pathname
+          : '/',
+      );
+    };
 
     return (
       <Container>
@@ -28,12 +34,12 @@ class Login extends Component {
               withCredentials: true,
               url: '/user/login',
             })
-              .then((res) => {
+              .then(() => {
                 setSubmitting(false);
                 next();
               })
               .catch((error) => {
-                setErrors({login: 'Invalid username or password!'});
+                setErrors({ login: 'Invalid username or password!' });
                 setSubmitting(false);
                 console.error(error);
               });
@@ -52,19 +58,17 @@ class Login extends Component {
           }}
         >
           {({
-            values,
-            handleChange,
-            handleBlur,
             isSubmitting,
             errors,
             handleSubmit,
-          }) => {
-            return (
+          }) => (
               <Form onSubmit={handleSubmit}>
-                {
-                  errors.login ? <Alert variant="danger">
-                  <Alert.Heading>{errors.login}</Alert.Heading>
-                </Alert> : null
+                {errors.login
+                  ?
+                  <Alert variant="danger">
+                    <Alert.Heading>{errors.login}</Alert.Heading>
+                  </Alert>
+                  : null
                 }
                 <Form.Group>
                   <Form.Label>Email</Form.Label>
@@ -74,7 +78,7 @@ class Login extends Component {
                     placeholder="Email"
                     type="input"
                     as={Form.Control}
-                  ></Field>
+                  />
                   <Form.Control.Feedback type="invalid">
                     {errors.email}
                   </Form.Control.Feedback>
@@ -85,7 +89,7 @@ class Login extends Component {
                     placeholder="Password"
                     type="password"
                     as={Form.Control}
-                  ></Field>
+                  />
                   <Form.Control.Feedback type="invalid">
                     {errors.password}
                   </Form.Control.Feedback>
@@ -95,13 +99,12 @@ class Login extends Component {
                     <span className="sr-only">Loading...</span>
                   </Spinner>
                 ) : (
-                  <Button type="submit" disabled={isSubmitting}>
-                    Login
-                  </Button>
-                )}
+                    <Button type="submit" disabled={isSubmitting}>
+                      Login
+                    </Button>
+                  )}
               </Form>
-            );
-          }}
+            )}
         </Formik>
       </Container>
     );
