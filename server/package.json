@@ -13,7 +13,6 @@
   "dependencies": {
     "@google-cloud/storage": "^5.3.0",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -22,10 +21,11 @@
     "hasha": "^5.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongo-cursor-pagination": "^7.3.1",
+    "mongodb": "^3.6.3",
     "mongoose": "^5.10.7",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "multer": "^1.4.2",
-    "npm": "^7.0.6",
+    "npm": "^7.1.1",
     "passport": "^0.4.1",
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^4.0.0",
@@ -45,5 +45,8 @@
     "plato": "^1.7.0",
     "prettier": "^2.1.2",
     "supertest": "^6.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

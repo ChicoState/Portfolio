@@ -17,10 +17,10 @@ const userData = {
 
 describe('User Model Test', () => {
   beforeAll(async () => {
+    mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
-      global.__MONGO_URI__,
+      process.env.MONGO_URL,
       {
-        useNewURLParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
       },

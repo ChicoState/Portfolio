@@ -35,9 +35,13 @@ const PostDataWithoutUser = {
 
 describe('Post Model Test', () => {
   beforeAll(async () => {
+    mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
-      global.__MONGO_URI__,
-      { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+      process.env.MONGO_URL,
+      {
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+      },
       (err) => {
         if (err) {
           console.error(err);
@@ -102,8 +106,9 @@ describe('Post Model Test', () => {
     const deleteAttachmentStub = jest
       .spyOn(helpers, 'deleteAttachment')
       .mockImplementation();
-    deleteAttachmentStub.mockClear();
     await savedPost.delete();
+    // Prevents flakiness
+    await new Promise((res) => setTimeout(res, 2000));
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(1);
   });
 
@@ -114,8 +119,9 @@ describe('Post Model Test', () => {
     const deleteAttachmentStub = jest
       .spyOn(helpers, 'deleteAttachment')
       .mockImplementation();
-    deleteAttachmentStub.mockClear();
     await savedPost.delete();
+    // Prevents flakiness
+    await new Promise((res) => setTimeout(res, 2000));
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(0);
   });
 });
