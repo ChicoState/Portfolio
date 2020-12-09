@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const app = require('../../server'); // Link to your server file
 const request = require('supertest');
+const app = require('../../server');
 const UserModel = require('../../models/user');
 
 const userData1 = {
@@ -29,12 +29,12 @@ const userData2 = {
   pending_followers: [],
 };
 
-describe('User Model Test', () => {
+describe('User Route Test', () => {
   beforeAll(async () => {
+    mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
-      global.__MONGO_URI__,
+      process.env.MONGO_URL,
       {
-        useNewURLParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
       },
@@ -64,16 +64,18 @@ describe('User Model Test', () => {
   });
 
   it('Create two users, check follow_status succeeded', async () => {
-      const agent = request.agent(app);
-      const validUser1 = new UserModel(userData1);
-      const savedUser1 = await validUser1.save();
-      const login = await agent.post('/user/login')
-      .send({email: userData1.email, password: userData1.password});
-
-      const followStatusResponse = await agent.get('/user/follow_status')
-      .send({followee_username: userData2.username})
-      console.log(followStatusResponse);
-      expect(followStatusResponse.status).toEqual(200);
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const followStatusResponse = await agent
+    .get('/user/follow_status/')
+    .query({
+      followee_username: userData2.username,
+    });
+    expect(followStatusResponse.status).toEqual(200);
   });
-
 });
