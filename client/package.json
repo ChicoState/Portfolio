@@ -27,6 +27,7 @@
     "react-tagify": "^0.1.3"
   },
   "devDependencies": {
+    "es6-plato": "^1.2.3",
     "eslint": "^6.6.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -46,7 +47,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false --coverage",
     "eject": "react-scripts eject",
-    "plato": "rm -rf ./.platoReportClient && plato -r -x node_modules -e .eslintrc.json -d .platoReportClient ."
+    "plato": "rm -rf ./report && ./node_modules/.bin/es6-plato -r -x node_modules -e .eslintrc.json -d report ."
   },
   "eslintconfig": {
     "extends": "react-app"

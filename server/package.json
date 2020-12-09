@@ -6,7 +6,7 @@
     "start": "nodemon --legacy-watch server.js",
     "lint": "eslint . --fix",
     "test": "jest --coverage --detectOpenHandles",
-    "plato": "rm -rf ./.platoReportServer && plato -r -x node_modules -e .eslintrc.json -d .platoReportServer ."
+    "plato": "rm -rf ./report && ./node_modules/.bin/es6-plato -r -x node_modules -e .eslintrc.json -d report ."
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.3",
+    "es6-plato": "^1.2.3",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.12.0",

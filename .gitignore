@@ -126,3 +126,9 @@ key.json
 
 # Testing config file
 globalConfig.json
+
+# Plato Results
+report
+
+# MongoDB binaries
+mongodb-binaries
