@@ -111,9 +111,11 @@ userRouter.put(
         if (error) return res.status(500).json(error);
 
         if (!result) {
-          return res.status(500).send('old password does not match password on record!');
+          return res
+            .status(500)
+            .send('old password does not match password on record!');
         }
-        if (req.body.old_password === req.body.new_password){
+        if (req.body.old_password === req.body.new_password) {
           return res.status(500).send('Duplicate password');
         }
         user.password = req.body.new_password;
