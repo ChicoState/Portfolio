@@ -108,7 +108,7 @@ describe('Post Model Test', () => {
       .mockImplementation();
     await savedPost.delete();
     // Prevents flakiness
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 2000));
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(1);
   });
 
@@ -121,7 +121,7 @@ describe('Post Model Test', () => {
       .mockImplementation();
     await savedPost.delete();
     // Prevents flakiness
-    await new Promise((res) => setTimeout(res, 1000));
+    await new Promise((res) => setTimeout(res, 2000));
     expect(deleteAttachmentStub).toHaveBeenCalledTimes(0);
   });
 });
