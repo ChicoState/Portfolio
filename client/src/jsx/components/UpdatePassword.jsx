@@ -50,7 +50,8 @@ class UpdatePassword extends Component {
               placeholder="Confirm New Password"
               type="password"
               onChange={(e) =>
-                this.setState({ new_password_confirm: e.target.value })}
+                this.setState({ new_password_confirm: e.target.value })
+              }
             />
           </Form.Group>
           <Button variant="primary" type="submit" onClick={update}>

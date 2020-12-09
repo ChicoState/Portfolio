@@ -67,7 +67,7 @@ export default class Follow extends Component {
                     Unfollow
                   </button>
                 </li>
-            ))
+              ))
             : null}
         </ul>
       </div>

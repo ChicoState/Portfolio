@@ -59,7 +59,7 @@ class NavigationBar extends Component {
                       Logout
                     </Nav.Link>
                   </IndexLinkContainer>,
-              ]
+                ]
               : [
                   <IndexLinkContainer
                     key="5"
@@ -85,7 +85,7 @@ class NavigationBar extends Component {
                       Sign Up
                     </Nav.Link>
                   </IndexLinkContainer>,
-              ]}
+                ]}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

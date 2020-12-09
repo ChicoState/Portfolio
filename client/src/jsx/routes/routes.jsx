@@ -32,8 +32,8 @@ class Routes extends Component {
                   this.props.cookies &&
                   getUserName(this.props.cookies.get('access_token'))
                     ? `/profile/${getUserName(
-                      this.props.cookies.get('access_token'),
-                    )}`
+                        this.props.cookies.get('access_token'),
+                      )}`
                     : '/login'
                 }
               />

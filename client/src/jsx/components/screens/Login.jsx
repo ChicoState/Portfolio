@@ -57,54 +57,48 @@ class Login extends Component {
             return errors;
           }}
         >
-          {({
-            isSubmitting,
-            errors,
-            handleSubmit,
-          }) => (
-              <Form onSubmit={handleSubmit}>
-                {errors.login
-                  ?
-                  <Alert variant="danger">
-                    <Alert.Heading>{errors.login}</Alert.Heading>
-                  </Alert>
-                  : null
-                }
-                <Form.Group>
-                  <Form.Label>Email</Form.Label>
-                  <Field
-                    isInvalid={errors.email}
-                    name="email"
-                    placeholder="Email"
-                    type="input"
-                    as={Form.Control}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                  <Form.Label>Password</Form.Label>
-                  <Field
-                    isInvalid={errors.password}
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    as={Form.Control}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                {isSubmitting ? (
-                  <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </Spinner>
-                ) : (
-                    <Button type="submit" disabled={isSubmitting}>
-                      Login
-                    </Button>
-                  )}
-              </Form>
-            )}
+          {({ isSubmitting, errors, handleSubmit }) => (
+            <Form onSubmit={handleSubmit}>
+              {errors.login ? (
+                <Alert variant="danger">
+                  <Alert.Heading>{errors.login}</Alert.Heading>
+                </Alert>
+              ) : null}
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Field
+                  isInvalid={errors.email}
+                  name="email"
+                  placeholder="Email"
+                  type="input"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+                <Form.Label>Password</Form.Label>
+                <Field
+                  isInvalid={errors.password}
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
+              </Form.Group>
+              {isSubmitting ? (
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              ) : (
+                <Button type="submit" disabled={isSubmitting}>
+                  Login
+                </Button>
+              )}
+            </Form>
+          )}
         </Formik>
       </Container>
     );

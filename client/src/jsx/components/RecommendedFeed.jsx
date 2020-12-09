@@ -70,7 +70,7 @@ export default class RecommendedFeed extends Component {
                     Follow
                   </button>
                 </li>
-            ))
+              ))
             : null}
         </ul>
       </div>
