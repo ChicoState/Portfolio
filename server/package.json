@@ -25,7 +25,7 @@
     "mongoose": "^5.10.7",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "multer": "^1.4.2",
-    "npm": "^7.0.6",
+    "npm": "^7.1.1",
     "passport": "^0.4.1",
     "passport-anonymous": "^1.0.1",
     "passport-jwt": "^4.0.0",
