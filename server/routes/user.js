@@ -100,6 +100,7 @@ userRouter.put(
     });
   },
 );
+
 userRouter.put(
   '/update/password',
   passport.authenticate('jwt', { session: false }),
@@ -110,9 +111,13 @@ userRouter.put(
         if (error) return res.status(500).json(error);
 
         if (!result) {
-          return res.send('old password does not match password on record!');
+          return res
+            .status(500)
+            .send('old password does not match password on record!');
         }
-
+        if (req.body.old_password === req.body.new_password) {
+          return res.status(500).send('Duplicate password');
+        }
         user.password = req.body.new_password;
         user.save((saveError) => {
           if (saveError) res.send('error saving new password to user doc!');
@@ -387,6 +392,7 @@ userRouter.put(
   },
 );
 
+// Deprecated and not in use. User "follow" route instead
 userRouter.post(
   '/unfollow',
   passport.authenticate('jwt', { session: false }),

@@ -10,7 +10,7 @@ class Signup extends Component {
       this.props.history.replace(
         this.props.location.state
           ? this.props.location.state.from.pathname
-          : '/'
+          : '/',
       );
     };
 
@@ -61,87 +61,74 @@ class Signup extends Component {
             return errors;
           }}
         >
-          {({
-            values,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting,
-            errors,
-          }) => {
-            return (
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formSignupUsername">
-                  <Form.Label>Username</Form.Label>
-                  <Field
-                    name="username"
-                    isInvalid={errors.username}
-                    placeholder="Username"
-                    type="input"
-                    as={Form.Control}
-                  ></Field>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.username}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="formSignupEmail">
-                  <Form.Label>Email</Form.Label>
-                  <Field
-                    isInvalid={errors.email}
-                    name="email"
-                    placeholder="Email"
-                    type="input"
-                    as={Form.Control}
-                  ></Field>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="formSignupPassword">
-                  <Form.Label>Password</Form.Label>
-                  <Field
-                    isInvalid={errors.password}
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    as={Form.Control}
-                  ></Field>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group controlId="formSignupPasswordConfirm">
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Field
-                    isInvalid={errors.passwordConfirm}
-                    name="passwordConfirm"
-                    placeholder="Password"
-                    type="password"
-                    as={Form.Control}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.passwordConfirm}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                {isSubmitting ? (
-                  <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </Spinner>
-                ) : (
-                  <Button
-                    disabled={isSubmitting}
-                    variant="primary"
-                    type="submit"
-                  >
-                    Sign up
-                  </Button>
-                )}
+          {({ values, handleSubmit, isSubmitting, errors }) => (
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formSignupUsername">
+                <Form.Label>Username</Form.Label>
+                <Field
+                  name="username"
+                  isInvalid={errors.username}
+                  placeholder="Username"
+                  type="input"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formSignupEmail">
+                <Form.Label>Email</Form.Label>
+                <Field
+                  isInvalid={errors.email}
+                  name="email"
+                  placeholder="Email"
+                  type="input"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formSignupPassword">
+                <Form.Label>Password</Form.Label>
+                <Field
+                  isInvalid={errors.password}
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="formSignupPasswordConfirm">
+                <Form.Label>Confirm Password</Form.Label>
+                <Field
+                  isInvalid={errors.passwordConfirm}
+                  name="passwordConfirm"
+                  placeholder="Password"
+                  type="password"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.passwordConfirm}
+                </Form.Control.Feedback>
+              </Form.Group>
+              {isSubmitting ? (
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              ) : (
+                <Button disabled={isSubmitting} variant="primary" type="submit">
+                  Sign up
+                </Button>
+              )}
 
-                <pre>{JSON.stringify(values, null, 2)}</pre>
-                <pre>{JSON.stringify(errors, null, 2)}</pre>
-              </Form>
-            );
-          }}
+              <pre>{JSON.stringify(values, null, 2)}</pre>
+              <pre>{JSON.stringify(errors, null, 2)}</pre>
+            </Form>
+          )}
         </Formik>
       </Container>
     );

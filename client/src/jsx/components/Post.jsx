@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card} from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import '../../css/post.css';
 
@@ -27,46 +27,46 @@ class Post extends Component {
   };
 
   render() {
-    let title = <div></div>;
+    let title = <div />;
     if (this.props.title.length > 0) {
       title = (
         <Card.Title className="card-title">{this.props.title}</Card.Title>
       );
     }
 
-    let attachment = <div></div>;
+    let attachment = <div />;
     if (this.props.attachments.length > 0) {
-      const attachment_ext = this.props.attachments[0].split('.').pop().toLowerCase(); 
-      const attachment_url = `https://storage.googleapis.com/${process.env.REACT_APP_BUCKET_NAME}/${this.props.attachments[0]}`;
-      if (this.state.image_formats.has(attachment_ext)) {
+      const attachmentExt = this.props.attachments[0]
+        .split('.')
+        .pop()
+        .toLowerCase();
+      const attachmentUrl = `https://storage.googleapis.com/${process.env.REACT_APP_BUCKET_NAME}/${this.props.attachments[0]}`;
+      if (this.state.image_formats.has(attachmentExt)) {
         attachment = (
-          <Card.Img
-            variant="top"
-            className="post-img"
-            src={attachment_url}
-          />
+          <Card.Img variant="top" className="post-img" src={attachmentUrl} />
         );
-      } else if (this.state.audio_formats.has(attachment_ext)) {
+      } else if (this.state.audio_formats.has(attachmentExt)) {
         attachment = (
-          <audio controls preload="metadata" src={attachment_url}>
+          <audio controls preload="metadata" src={attachmentUrl}>
             Your browser does not support the <code>audio</code> element.
           </audio>
         );
-      } else if (this.state.video_formats.has(attachment_ext)) {
+      } else if (this.state.video_formats.has(attachmentExt)) {
         attachment = (
-          <video controls preload="metadata" src={attachment_url + "#t=0.5"}>
-            Your browser does not support the
-            <code>video</code> element.
+          <video controls preload="metadata" src={`${attachmentUrl}#t=0.5`}>
+            Your browser does not support the <code>video</code> element.
           </video>
         );
       } else {
         attachment = (
-          <a className="btn btn-info" href={attachment_url} download>Download</a>
+          <a className="btn btn-info" href={attachmentUrl} download>
+            Download
+          </a>
         );
       }
     }
 
-    let message = <div></div>;
+    let message = <div />;
     if (this.props.message.length > 0) {
       message = (
         <Card.Body className="card-title">
@@ -79,7 +79,13 @@ class Post extends Component {
       <Card className="mb-4 mx-4 shadow-sm" style={{ width: '18rem' }}>
         <Card.Header className="card-title">
           <small className="card-title text-muted float-left">
-    {this.props.link ? <Link className="user" to={`/profile/${this.props.username}`}>{this.props.username}</Link> : this.props.username}
+            {this.props.link ? (
+              <Link className="user" to={`/profile/${this.props.username}`}>
+                {this.props.username}
+              </Link>
+            ) : (
+              this.props.username
+            )}
           </small>
           {this.props.delete ? (
             <div className="icon float-right">
