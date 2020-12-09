@@ -390,7 +390,7 @@ userRouter.put(
   },
 );
 
-//Deprecated and not in use. User "follow" route instead
+// Deprecated and not in use. User "follow" route instead
 userRouter.post(
   '/unfollow',
   passport.authenticate('jwt', { session: false }),

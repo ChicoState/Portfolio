@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const app = require('../../server'); // Link to your server file
 const request = require('supertest');
+const app = require('../../server');
 const UserModel = require('../../models/user');
 
 const userData = {
@@ -16,12 +16,13 @@ const userData = {
   pending_followers: [mongoose.Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa')],
 };
 
-describe('User Model Test', () => {
+describe('Post Route Test', () => {
+  let server;
   beforeAll(async () => {
+    mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
-      global.__MONGO_URI__,
+      process.env.MONGO_URL,
       {
-        useNewURLParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
       },
@@ -32,10 +33,12 @@ describe('User Model Test', () => {
         }
       },
     );
+    server = app.listen(3001);
   });
 
   afterAll(async () => {
     mongoose.connection.close();
+    server.close();
   });
 
   afterEach(async () => {
@@ -50,33 +53,14 @@ describe('User Model Test', () => {
     }
   });
 
-//   // Valid user creation
-//   it('Create and save user successfully', async () => {
-//     const agent = request.agent(app);
-//     const validUser = new UserModel(userData);
-//     const savedUser = await validUser.save();
-//     const login = await agent
-//     .post('/user/login')
-//     .send({
-//         email: userData.email,
-//         password: userData.password,
-//     })
-//     /*
-//     const response = await agent
-//         .post('/post/create')
-//         .send({  
-//         title: 'title',
-//         message: 'message',
-//         attachments: ['attachment.txt'],
-//         user: savedUser,
-//         tags: ['tag'],
-//         timestamp: new Date(),
-//         username: savedUser.username,})
-//         */
-//     const response = await agent
-//         .get('/post/view/' + userData.username)
-//     //console.log(response);
-//     expect(response.status).toEqual(200);
-//   });
-
+  it('Get all posts successfully', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const response = await agent.get(`/post/view/${userData.username}`);
+    expect(response.status).toEqual(200);
+  });
 });
