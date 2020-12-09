@@ -36,6 +36,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.2",
     "eslint-plugin-react-hooks": "^4.1.2",
+    "plato": "^1.7.0",
     "prettier": "^2.1.2",
     "prettier-eslint": "^11.0.0"
   },
@@ -43,8 +44,9 @@
     "start": "react-scripts start",
     "lint": "eslint . --fix",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --watchAll=false --coverage",
+    "eject": "react-scripts eject",
+    "plato": "rm -rf ./.platoReportClient && plato -r -x node_modules -e .eslintrc.json -d .platoReportClient ."
   },
   "eslintconfig": {
     "extends": "react-app"

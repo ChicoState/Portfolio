@@ -5,7 +5,8 @@
   "scripts": {
     "start": "nodemon --legacy-watch server.js",
     "lint": "eslint . --fix",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --coverage --detectOpenHandles",
+    "plato": "rm -rf ./.platoReportServer && plato -r -x node_modules -e .eslintrc.json -d .platoReportServer ."
   },
   "author": "",
   "license": "ISC",
@@ -40,6 +41,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4",
+    "plato": "^1.7.0",
     "prettier": "^2.1.2",
     "supertest": "^6.0.1"
   },
