@@ -6,7 +6,13 @@ import { Formik, Field } from 'formik';
 
 class Login extends Component {
   render() {
-    const next = () => {this.props.history.replace(this.props.location.state ? this.props.location.state.from.pathname : '/');}
+    const next = () => {
+      this.props.history.replace(
+        this.props.location.state
+          ? this.props.location.state.from.pathname
+          : '/',
+      );
+    };
 
     return (
       <Container>
@@ -28,12 +34,12 @@ class Login extends Component {
               withCredentials: true,
               url: '/user/login',
             })
-              .then((res) => {
+              .then(() => {
                 setSubmitting(false);
                 next();
               })
               .catch((error) => {
-                setErrors({login: 'Invalid username or password!'});
+                setErrors({ login: 'Invalid username or password!' });
                 setSubmitting(false);
                 console.error(error);
               });
@@ -51,57 +57,48 @@ class Login extends Component {
             return errors;
           }}
         >
-          {({
-            values,
-            handleChange,
-            handleBlur,
-            isSubmitting,
-            errors,
-            handleSubmit,
-          }) => {
-            return (
-              <Form onSubmit={handleSubmit}>
-                {
-                  errors.login ? <Alert variant="danger">
+          {({ isSubmitting, errors, handleSubmit }) => (
+            <Form onSubmit={handleSubmit}>
+              {errors.login ? (
+                <Alert variant="danger">
                   <Alert.Heading>{errors.login}</Alert.Heading>
-                </Alert> : null
-                }
-                <Form.Group>
-                  <Form.Label>Email</Form.Label>
-                  <Field
-                    isInvalid={errors.email}
-                    name="email"
-                    placeholder="Email"
-                    type="input"
-                    as={Form.Control}
-                  ></Field>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.email}
-                  </Form.Control.Feedback>
-                  <Form.Label>Password</Form.Label>
-                  <Field
-                    isInvalid={errors.password}
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    as={Form.Control}
-                  ></Field>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.password}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                {isSubmitting ? (
-                  <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </Spinner>
-                ) : (
-                  <Button type="submit" disabled={isSubmitting}>
-                    Login
-                  </Button>
-                )}
-              </Form>
-            );
-          }}
+                </Alert>
+              ) : null}
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Field
+                  isInvalid={errors.email}
+                  name="email"
+                  placeholder="Email"
+                  type="input"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+                <Form.Label>Password</Form.Label>
+                <Field
+                  isInvalid={errors.password}
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                  as={Form.Control}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
+              </Form.Group>
+              {isSubmitting ? (
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </Spinner>
+              ) : (
+                <Button type="submit" disabled={isSubmitting}>
+                  Login
+                </Button>
+              )}
+            </Form>
+          )}
         </Formik>
       </Container>
     );

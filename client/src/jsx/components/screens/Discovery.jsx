@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { Spinner } from 'react-bootstrap';
+
+import InfiniteScroll from 'react-infinite-scroll-component';
 import Post from '../Post';
 import { getUserName } from '../Authentication';
-import InfiniteScroll from 'react-infinite-scroll-component';
-
 
 class Discovery extends Component {
   state = {
@@ -14,7 +13,7 @@ class Discovery extends Component {
     next: null,
     hasNext: false,
     searching: false,
-  }
+  };
 
   search = (next) => {
     this.setState({
@@ -22,42 +21,39 @@ class Discovery extends Component {
     });
     return axios({
       method: 'GET',
-      params:
-      {
+      params: {
         tags: this.state.tags,
         limit: 20,
-        next: next,
+        next,
       },
       withCredentials: true,
-      url: '/post/discovery'
+      url: '/post/discovery',
     })
       .then((res) => {
-        this.setState(
-          {
-            posts: this.state.posts && next
+        this.setState({
+          posts:
+            this.state.posts && next
               ? this.state.posts.concat(res.data.results)
               : res.data.results,
-            next: res.data.next,
-            hasNext: res.data.hasNext,
-            searching: false
-          }
-        )
+          next: res.data.next,
+          hasNext: res.data.hasNext,
+          searching: false,
+        });
       })
       .catch((error) => {
         this.setState({
           searching: false,
         });
-        console.error(error)
-      })
+        console.error(error);
+      });
   };
 
   render() {
-
-    const deletePost = (post_id) => {
+    const deletePost = (postId) => {
       axios({
         method: 'POST',
         data: {
-          id: post_id,
+          id: postId,
         },
         withCredentials: true,
         url: '/post/delete',
@@ -65,22 +61,26 @@ class Discovery extends Component {
         .then((res) => {
           if (res.status === 200) {
             this.setState((prevState) => ({
-              posts: prevState.posts.filter((post) => post._id !== post_id),
+              posts: prevState.posts.filter((post) => post._id !== postId),
             }));
           }
         })
         .catch((error) => console.log(error));
     };
 
-
-    let curUsername = getUserName(
-      this.props.cookies ? this.props.cookies.get('access_token') : null
+    const curUsername = getUserName(
+      this.props.cookies ? this.props.cookies.get('access_token') : null,
     );
 
     return (
       <div>
         <h1>Discovery</h1>
-        <Form onSubmit={(e) => {this.search(null); e.preventDefault();}}>
+        <Form
+          onSubmit={(e) => {
+            this.search(null);
+            e.preventDefault();
+          }}
+        >
           <Form.Group controlId="formPostTitle">
             <Form.Label>Search</Form.Label>
             <Form.Control
@@ -88,18 +88,15 @@ class Discovery extends Component {
               onChange={(e) => this.setState({ tags: e.target.value })}
             />
           </Form.Group>
-          {this.state.searching ?
+          {this.state.searching ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
-            </Spinner> :
-
-            <Button
-              type="submit"
-              variant="primary"
-            >
+            </Spinner>
+          ) : (
+            <Button type="submit" variant="primary">
               Enter
-                </Button>
-          }
+            </Button>
+          )}
         </Form>
         <br />
         {this.state.posts ? (
@@ -115,28 +112,25 @@ class Discovery extends Component {
             }
             scrollThreshold="80%"
           >
-            {this.state.posts.map((item) => {
-              return (
-                <Post
-                  className="col-sm"
-                  key={item._id}
-                  title={item.title}
-                  message={item.message}
-                  username={item.username}
-                  attachments={item.attachments}
-                  timestamp={item.timestamp}
-                  id={item._id}
-                  delete={item.username === curUsername}
-                  deleteHandler={deletePost}
-                  link={curUsername ? true : false}
-                />
-              );
-            })}
+            {this.state.posts.map((item) => (
+              <Post
+                className="col-sm"
+                key={item._id}
+                title={item.title}
+                message={item.message}
+                username={item.username}
+                attachments={item.attachments}
+                timestamp={item.timestamp}
+                id={item._id}
+                delete={item.username === curUsername}
+                deleteHandler={deletePost}
+                link={!!curUsername}
+              />
+            ))}
           </InfiniteScroll>
         ) : (
-            <div></div>
-          )
-        }
+          <div />
+        )}
       </div>
     );
   }
