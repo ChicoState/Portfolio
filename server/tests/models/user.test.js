@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const UserModel = require('../../models/user');
 
 const userData = {
@@ -66,9 +65,10 @@ describe('User Model Test', () => {
     expect(savedUser.pending_followers).toEqual(
       expect.objectContaining(userData.pending_followers),
     );
-    expect(bcrypt.compareSync(userData.password, savedUser.password)).toBe(
-      true,
-    );
+    savedUser.comparePassword(userData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
   });
 
   it('User with only strictly necessary fields', async () => {
@@ -84,9 +84,10 @@ describe('User Model Test', () => {
     expect(savedUser.username).toBe(bareData.username);
     expect(savedUser.email).toBe(bareData.email);
     expect(savedUser.role).toBe(bareData.role);
-    expect(bcrypt.compareSync(bareData.password, savedUser.password)).toBe(
-      true,
-    );
+    savedUser.comparePassword(bareData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
   });
 
   it('User missing a username', async () => {
@@ -118,9 +119,10 @@ describe('User Model Test', () => {
     expect(savedUser.username).toBe(validData.username);
     expect(savedUser.email).toBe(validData.email);
     expect(savedUser.role).toBe(validData.role);
-    expect(bcrypt.compareSync(validData.password, savedUser.password)).toBe(
-      true,
-    );
+    savedUser.comparePassword(validData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
     const copyUser = new UserModel(validData);
     let err;
     try {
@@ -145,9 +147,10 @@ describe('User Model Test', () => {
     expect(savedUser.username).toBe(extraData.username);
     expect(savedUser.email).toBe(extraData.email);
     expect(savedUser.role).toBe(extraData.role);
-    expect(bcrypt.compareSync(extraData.password, savedUser.password)).toBe(
-      true,
-    );
+    savedUser.comparePassword(extraData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
     expect(savedUser.job).toBeUndefined();
   });
 });
