@@ -10,7 +10,7 @@ class Home extends Component {
         authenticated(this.props.cookies.get('access_token')) ? (
           <div>
             <h1>
-              Welcome back,{' '}
+              Welcome Back,{' '}
               {getUserName(this.props.cookies.get('access_token'))}
             </h1>
             <Feed cookies={this.props.cookies} />

@@ -84,9 +84,19 @@ class FollowButton extends Component {
         </div>
       );
     }
+    let buttonText;
+    if (this.state.followStatus === 'followed') {
+      buttonText = 'Unfollow';
+    } else if (this.state.followStatus === 'unfollowed') {
+      buttonText = 'Follow';
+    } else if (this.state.followStatus === 'pending') {
+      buttonText = 'Requested';
+    } else {
+      buttonText = this.state.followStatus;
+    }
     return (
       <Button onClick={() => this.followUser(this.props.pageUsername)}>
-        {this.state.followStatus}
+        {buttonText}
       </Button>
     );
   }
