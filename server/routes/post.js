@@ -6,40 +6,10 @@ const postRouter = express.Router();
 require('../passport.js');
 
 const multer = require('multer');
-const path = require('path');
-const hasha = require('hasha');
 const Post = require('../models/post');
-const bucket = require('../storage');
 
 const upload = multer({ storage: multer.memoryStorage() });
-
-const uploadFile = (file) =>
-  new Promise((resolve, reject) => {
-    const hash = hasha(file.buffer, { algorithm: 'md5' });
-    const filename = hash + path.extname(file.originalname);
-    const bucketFile = bucket.file(filename);
-    bucketFile.exists((err, exists) => {
-      if (err || !exists) {
-        const stream = bucketFile.createWriteStream({
-          resumable: false,
-          metadata: {
-            contentDisposition: 'attachment',
-          },
-        });
-        stream.on('finish', () => {
-          resolve(filename);
-        });
-        stream.on('error', (error) => {
-          reject(
-            new Error(`Unable to upload file, something went wrong: ${error}`),
-          );
-        });
-        stream.end(file.buffer);
-      } else {
-        resolve(filename);
-      }
-    });
-  });
+const helpers = require('./helpers');
 
 postRouter.post(
   '/create',
@@ -50,14 +20,16 @@ postRouter.post(
       title: req.body.title,
       message: req.body.message,
       user: req.user._id,
-      tags: req.body.tags.replace(/\s+/g, '').split(','),
+      tags: req.body.tags.toString().replace(/\s+/g, '').split(','),
       username: req.user.username,
     });
-    const promises = req.files.map(async (file) => {
-      const filename = await uploadFile(file);
-      newPost.attachments.push(filename);
-    });
-    await Promise.all(promises);
+    if (req.files) {
+      const promises = req.files.map(async (file) => {
+        const filename = await helpers.uploadFile(file);
+        newPost.attachments.push(filename);
+      });
+      await Promise.all(promises);
+    }
     newPost
       .save()
       .then(() => res.send(`Post ${req.body.title} successfully created.`))
