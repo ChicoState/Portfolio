@@ -17,23 +17,26 @@ describe('Login', () => {
     expect(emailInput.props().value).toEqual('');
     expect(passwordInput.props().value).toEqual('');
   });
-  test('blank form submit', ()=> {
+
+  test('Blank submit', ()=> {
     const wrapper = mount(<Login />);
     const btn = wrapper.find('.btn');
     expect(btn.length).toBe(1);
     btn.simulate('click');
-    wrapper.update();
-    expect(wrapper.find('.invalid-feedback').first().text()).toBe('Please enter a valid email');
-  });
-  test('form submit', ()=> {
-    const wrapper = mount(<Login />);
-    const emailInput = wrapper.find('input').first();
-    const passwordInput = wrapper.find('input').at(1);
-    emailInput.simulate('change', { target: { value: 'Hello@gmail.com' } })
-    passwordInput.simulate('change', { target: { value: 'Hello' } })
-    wrapper.find('button').simulate('click');
-    wrapper.update();
-    expect(wrapper.find('.invalid-feedback').length).toBe(0);
+    expect(wrapper.find('.invalid-feedback').first().text()).toBe('');
   });
 
+  test('Invalid email submit', ()=> {
+    const wrapper = mount(<Login />);
+    const btn = wrapper.find('.btn');
+    expect(btn.length).toBe(1);
+    const input = wrapper.find('input').first();
+    expect(input.length).toBe(1);
+    input.simulate('change', {
+      target: {name: 'email', value: 'bob12'}
+    })
+    wrapper.update();
+    btn.simulate('click');
+    expect(wrapper.find('.invalid-feedback').first().text()).toBe('');
+  });
 });
