@@ -9,17 +9,6 @@ class UpdateName extends Component {
     last_name: '',
     user: '',
   };
-  // componentDidMount(){
-  //     return axios({
-  //         method: "GET",
-  //         url: "/user/authenticated",
-  //         withCredentials: true,
-  //     })
-  //     .then((res) => {
-  //         this.setState({user: res.data.user})
-  //     })
-  //     .catch((error) => console.log(error));
-  // }
 
   render() {
     const update = () => {

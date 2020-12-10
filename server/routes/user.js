@@ -348,6 +348,7 @@ userRouter.get(
   },
 );
 
+// Toggles user privacy setting
 userRouter.put(
   '/visibility',
   passport.authenticate('jwt', { session: false }),
@@ -388,31 +389,6 @@ userRouter.put(
         }
         return res.status(200).json({ visibility: user.public });
       });
-    });
-  },
-);
-
-// Deprecated and not in use. User "follow" route instead
-userRouter.post(
-  '/unfollow',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    User.findById(req.user._id, (err, user) => {
-      if (err) return res.status(500).json(err);
-      if (user.followed_users.includes(req.body.follow_user_id)) {
-        user.followed_users.pull(req.body.follow_user_id);
-        user.save((saveError) => {
-          if (saveError) {
-            res
-              .status(500)
-              .send(`${saveError}Could not unfollow user from database`);
-          }
-          return res.send(
-            `${req.user.username} is now unfollowing ${req.body.follow_username}`,
-          );
-        });
-      }
-      return user;
     });
   },
 );
