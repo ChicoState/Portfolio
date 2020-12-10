@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Spinner } from 'react-bootstrap';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import Post from './Post';
 import { getUserName } from './Authentication';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
+// DEPRECATED
 class Feed extends Component {
   state = {
     posts: null,
     next: null,
     hasNext: false,
   };
-
-  componentDidMount() {
-    this.fetchPosts(null);
-  }
 
   fetchPosts(next) {
     return axios({
@@ -23,7 +20,7 @@ class Feed extends Component {
       url: '/post/feed',
       params: {
         limit: 20,
-        next,
+        next: next,
       },
     })
       .then((res) => {
@@ -40,12 +37,16 @@ class Feed extends Component {
       });
   }
 
+  componentDidMount() {
+    this.fetchPosts(null);
+  }
+
   render() {
-    const deletePost = (postId) => {
+    const deletePost = (post_id) => {
       axios({
         method: 'POST',
         data: {
-          id: postId,
+          id: post_id,
         },
         withCredentials: true,
         url: '/post/delete',
@@ -53,15 +54,15 @@ class Feed extends Component {
         .then((res) => {
           if (res.status === 200) {
             this.setState((prevState) => ({
-              posts: prevState.posts.filter((post) => post._id !== postId),
+              posts: prevState.posts.filter((post) => post._id !== post_id),
             }));
           }
         })
         .catch((error) => console.log(error));
     };
 
-    const curUsername = getUserName(
-      this.props.cookies ? this.props.cookies.get('access_token') : null,
+    let curUsername = getUserName(
+      this.props.cookies ? this.props.cookies.get('access_token') : null
     );
 
     return this.state.posts ? (
@@ -77,21 +78,23 @@ class Feed extends Component {
         }
         scrollThreshold="80%"
       >
-        {this.state.posts.map((item) => (
-          <Post
-            className="col-sm"
-            key={item._id}
-            title={item.title}
-            message={item.message}
-            username={item.username}
-            attachments={item.attachments}
-            timestamp={item.timestamp}
-            id={item._id}
-            delete={item.username === curUsername}
-            deleteHandler={deletePost}
-            link={!!curUsername}
-          />
-        ))}
+        {this.state.posts.map((item) => {
+          return (
+            <Post
+              className="col-sm"
+              key={item._id}
+              title={item.title}
+              message={item.message}
+              username={item.username}
+              attachments={item.attachments}
+              timestamp={item.timestamp}
+              id={item._id}
+              delete={item.username === curUsername}
+              deleteHandler={deletePost}
+              link={curUsername ? true : false}
+            />
+          );
+        })}
       </InfiniteScroll>
     ) : (
       <Spinner animation="border" role="status">

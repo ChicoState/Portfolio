@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import './css/index.css';
 import App from './jsx/App';
@@ -9,7 +9,7 @@ import * as serviceWorker from './jsx/serviceWorker';
 ReactDOM.render(
   <CookiesProvider>
     <BrowserRouter>
-      <App />
+      <App/>
     </BrowserRouter>
   </CookiesProvider>,
   document.getElementById('root'),

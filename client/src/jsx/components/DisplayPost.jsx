@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Spinner } from 'react-bootstrap';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import Post from './Post';
 import axios from 'axios';
 import '../../css/post.css';
-import Post from './Post';
 import CreatePost from './CreatePost';
 import { getUserName } from './Authentication';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 class DisplayPost extends Component {
   constructor(props) {
@@ -40,17 +40,6 @@ class DisplayPost extends Component {
     };
   }
 
-  componentDidMount() {
-    this.fetchPosts(null);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.username !== prevProps.username) {
-      this.setState({ posts: null });
-      this.fetchPosts(null);
-    }
-  }
-
   onFileChange = (event) => {
     this.setState({ selectedFile: event.target.files[0] });
   };
@@ -59,10 +48,10 @@ class DisplayPost extends Component {
     return axios({
       method: 'GET',
       withCredentials: true,
-      url: `/post/view${this.props.username ? `/${this.props.username}` : ''}`,
+      url: `/post/view${this.props.username ? '/' + this.props.username : ''}`,
       params: {
         limit: 20,
-        next,
+        next: next,
       },
     })
       .then((res) => {
@@ -79,12 +68,23 @@ class DisplayPost extends Component {
       });
   }
 
+  componentDidMount() {
+    this.fetchPosts(null);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.username !== prevProps.username) {
+      this.setState({ posts: null });
+      this.fetchPosts(null);
+    }
+  }
+
   render() {
-    const deletePost = (postId) => {
+    const deletePost = (post_id) => {
       axios({
         method: 'POST',
         data: {
-          id: postId,
+          id: post_id,
         },
         withCredentials: true,
         url: '/post/delete',
@@ -92,26 +92,21 @@ class DisplayPost extends Component {
         .then((res) => {
           if (res.status === 200) {
             this.setState((prevState) => ({
-              posts: prevState.posts.filter((post) => post._id !== postId),
+              posts: prevState.posts.filter((post) => post._id !== post_id),
             }));
           }
         })
         .catch((error) => console.log(error));
     };
 
-    const curUsername = getUserName(
-      this.props.cookies ? this.props.cookies.get('access_token') : null,
+    let curUsername = getUserName(
+      this.props.cookies ? this.props.cookies.get('access_token') : null
     );
 
     return (
       <div>
         {curUsername === this.props.username ? (
-          <CreatePost
-            handleCreate={() => {
-              this.setState({ posts: null });
-              this.fetchPosts(null);
-            }}
-          />
+          <CreatePost handleCreate={() => {this.setState({ posts: null}); this.fetchPosts(null);}} />
         ) : null}
 
         {this.state.posts ? (
@@ -127,21 +122,23 @@ class DisplayPost extends Component {
             }
             scrollThreshold="80%"
           >
-            {this.state.posts.map((item) => (
-              <Post
-                className="col-sm"
-                key={item._id}
-                title={item.title}
-                message={item.message}
-                username={item.username}
-                attachments={item.attachments}
-                timestamp={item.timestamp}
-                id={item._id}
-                delete={item.username === curUsername}
-                deleteHandler={deletePost}
-                link={false}
-              />
-            ))}
+            {this.state.posts.map((item) => {
+              return (
+                <Post
+                  className="col-sm"
+                  key={item._id}
+                  title={item.title}
+                  message={item.message}
+                  username={item.username}
+                  attachments={item.attachments}
+                  timestamp={item.timestamp}
+                  id={item._id}
+                  delete={item.username === curUsername}
+                  deleteHandler={deletePost}
+                  link={false}
+                />
+              );
+            })}
           </InfiniteScroll>
         ) : (
           <Spinner animation="border" role="status">

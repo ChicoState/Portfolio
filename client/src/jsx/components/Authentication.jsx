@@ -1,31 +1,47 @@
-import jwtDecode from 'jwt-decode';
+import jwt_decode from "jwt-decode";
 
 function authenticated(cookie) {
   if (cookie) {
-    const expiration = jwtDecode(cookie).exp;
-    return expiration > Math.round(Date.now() / 1000);
+    let expiration = jwt_decode(cookie).exp;
+    return expiration > Math.round((Date.now() / 1000));
   }
   return false;
 }
 
 function getUserId(cookie) {
   if (cookie) {
-    const token = jwtDecode(cookie);
-    if (token.exp > Math.round(Date.now() / 1000)) {
+    let token = jwt_decode(cookie);
+    if (token.exp > Math.round((Date.now() / 1000))) {
       return token.id;
     }
   }
-  return null;
+  return null; 
 }
 
 function getUserName(cookie) {
   if (cookie) {
-    const token = jwtDecode(cookie);
-    if (token.exp > Math.round(Date.now() / 1000)) {
+    let token = jwt_decode(cookie);
+    if (token.exp > Math.round((Date.now() / 1000))) {
       return token.username;
     }
   }
-  return null;
+  return null; 
 }
 
-export { authenticated, getUserId, getUserName };
+/*
+function requireAuth(nextState, replace, next) {
+  if (!authenticated) {
+    replace({
+      pathname: '/login',
+      state: {nextPathname: nextState.location.pathname}
+    });
+  }
+  next();
+}
+*/
+
+export {
+  authenticated,
+  getUserId,
+  getUserName
+}

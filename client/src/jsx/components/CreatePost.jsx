@@ -16,20 +16,23 @@ class CreatePost extends Component {
     this.setState({ selectedFile: event.target.files[0] });
   };
 
+  
+
   render() {
+
     const create = () => {
       const postData = new FormData();
       if (this.state.selectedFile) {
         postData.append(
           'attachment',
           this.state.selectedFile,
-          this.state.selectedFile.name,
+          this.state.selectedFile.name
         );
         console.log(postData);
       }
       postData.append('title', this.state.title);
       postData.append('message', this.state.message);
-      postData.append('tags', this.state.tags);
+      postData.append('tags', this.state.tags)
       this.setState({ uploading: true });
       axios({
         method: 'POST',
@@ -42,13 +45,8 @@ class CreatePost extends Component {
       })
         .then(() => {
           this.props.handleCreate();
-          this.setState({
-            uploading: false,
-            title: '',
-            message: '',
-            selectedFile: null,
-          });
-          ReactDOM.findDOMNode(this.form).reset();
+          this.setState({uploading: false, title: '', message: '', selectedFile: null});
+          ReactDOM.findDOMNode(this.form).reset()
         })
         .catch((error) => {
           console.log(error);
@@ -57,11 +55,7 @@ class CreatePost extends Component {
 
     return (
       <Container className="col-6">
-        <Form
-          ref={(form) => {
-            this.form = form;
-          }}
-        >
+        <Form ref={form => { this.form = form; } }>
           <Form.Group controlId="formPostTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -80,13 +74,14 @@ class CreatePost extends Component {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Tags</Form.Label>
+          <Form.Label>Tags</Form.Label>
             <Form.Control
-              as="textarea"
-              rows="4"
+              as = "textarea"
+              rows = "4"
               placeholder="Ex: Art, Photography, Music, Video"
               onChange={(e) => this.setState({ tags: e.target.value })}
-            />
+            >
+            </Form.Control>
           </Form.Group>
           <Form.Group>
             <Form.File

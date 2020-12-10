@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Redirect, withRouter } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap';
 import { authenticated } from '../Authentication';
+import { Redirect, withRouter } from 'react-router-dom';
 import ProfileHeader from '../ProfileHeader';
+import { Spinner } from 'react-bootstrap';
 import DisplayPost from '../DisplayPost';
 import NotFound from './NotFound';
 
@@ -11,7 +11,6 @@ class Profile extends Component {
   state = {
     exists: null,
   };
-
   componentDidMount() {
     return axios({
       method: 'GET',
@@ -26,32 +25,27 @@ class Profile extends Component {
         this.setState({ exists: false });
       });
   }
-
   render() {
     if (
       !this.props.cookies ||
       !authenticated(this.props.cookies.get('access_token'))
     ) {
       return <Redirect to="/login" />;
-    }
-    if (this.state.exists) {
+    } else if (this.state.exists) {
       return (
         <div>
-          <ProfileHeader
-            cookies={this.props.cookies}
-            pageUsername={this.props.match.params.username}
-          />
+          <ProfileHeader cookies={this.props.cookies} pageUsername={this.props.match.params.username} />
           <DisplayPost
             cookies={this.props.cookies}
             username={this.props.match.params.username}
           />
         </div>
       );
-    }
-    if (this.state.exists === null) {
+    } else if (this.state.exists === null) {
       return <Spinner />;
+    } else {
+      return <NotFound />;
     }
-    return <NotFound />;
   }
 }
 

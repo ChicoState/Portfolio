@@ -40,20 +40,16 @@ class NavigationBar extends Component {
           <Nav className="ml-auto">
             {curUsername
               ? [
-                  <IndexLinkContainer
-                    key="2"
-                    exact
-                    to={`/profile/${curUsername}`}
-                  >
+                  <IndexLinkContainer key="2" exact to={`/profile/${curUsername}`}>
                     <Nav.Link active={false} eventKey="2">
                       Profile
                     </Nav.Link>
                   </IndexLinkContainer>,
                   <IndexLinkContainer key="3" exact to="/account">
-                    <Nav.Link active={false} eventKey="3">
-                      Account
-                    </Nav.Link>
-                  </IndexLinkContainer>,
+                  <Nav.Link active={false} eventKey="3">
+                    Account
+                  </Nav.Link>
+                </IndexLinkContainer>,
                   <IndexLinkContainer key="4" exact to="/logout">
                     <Nav.Link active={false} eventKey="4">
                       Logout
