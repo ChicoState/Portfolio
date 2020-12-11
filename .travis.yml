@@ -3,6 +3,9 @@ os: linux
 dist: xenial
 services:
   - docker
+addons:
+  sonarcloud:
+    organization: "csci430"
 before_script:
   - touch .env
 jobs:
@@ -16,3 +19,5 @@ jobs:
       name: "Server Test"
     - script: docker-compose run client npm test
       name: "Client Test"
+    - script: sonar-scanner -Dsonar.verbose=true -X
+      name: "Sonar Scan"
