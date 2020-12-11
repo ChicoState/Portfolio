@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../../server');
-const helpers = require('../../routes/helpers');
+const route_helpers = require('../../routes/helpers');
+const model_helpers = require('../../models/helpers');
 const UserModel = require('../../models/user');
 const Post = require('../../models/post');
 
 const userData = {
-  username: 'testuser',
+  username: 'username',
   email: 'test@nuts.com',
   password: 'password',
   role: 'user',
@@ -22,6 +23,16 @@ const basicPostData = {
   title: 'title',
   message: 'message',
   tags: 'tag',
+};
+
+const postData = {
+  title: 'title',
+  message: 'message',
+  attachments: ['attachment.txt'],
+  user: mongoose.Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa'),
+  tags: ['tag'],
+  timestamp: new Date(),
+  username: 'username',
 };
 
 describe('Post Route Test', () => {
@@ -69,7 +80,7 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(helpers, 'uploadFile')
+      .spyOn(route_helpers, 'uploadFile')
       .mockImplementation();
     const response = await agent.post('/post/create/').send(basicPostData);
     const post = await Post.findOne({ username: userData.username });
@@ -77,7 +88,7 @@ describe('Post Route Test', () => {
     expect(response.status).toEqual(200);
     expect(post.title).toEqual(basicPostData.title);
     expect(post.message).toEqual(basicPostData.message);
-    expect(post.tags[0]).toEqual(basicPostData.tags);
+    expect(post.tags).toEqual(expect.objectContaining([basicPostData.tags]));
   });
 
   it('Create a post with attachment successfully', async () => {
@@ -88,7 +99,7 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(helpers, 'uploadFile')
+      .spyOn(route_helpers, 'uploadFile')
       .mockImplementation();
     const response = await agent
       .post('/post/create/')
@@ -106,10 +117,99 @@ describe('Post Route Test', () => {
     expect(response.status).toEqual(200);
     expect(post.title).toEqual(basicPostData.title);
     expect(post.message).toEqual(basicPostData.message);
-    expect(post.tags[0]).toEqual(basicPostData.tags);
+    expect(post.tags).toEqual(expect.objectContaining([basicPostData.tags]));
   });
 
-  it('Get all posts successfully', async () => {
+  it('Create an empty post fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const uploadFileStub = jest
+      .spyOn(route_helpers, 'uploadFile')
+      .mockImplementation();
+    const response = await agent.post('/post/create/').send({});
+    const post = await Post.findOne({ username: userData.username });
+    expect(uploadFileStub).toHaveBeenCalledTimes(0);
+    expect(response.status).toEqual(400);
+    expect(post).toBeNull();
+  });
+
+  it('Create an invalid post fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const uploadFileStub = jest
+      .spyOn(route_helpers, 'uploadFile')
+      .mockImplementation();
+    let invalidPostData = basicPostData;
+    invalidPostData.title = ['invalid', 'title']
+    const response = await agent.post('/post/create/').send(invalidPostData);
+    const post = await Post.findOne({ username: userData.username });
+    expect(uploadFileStub).toHaveBeenCalledTimes(0);
+    expect(response.status).toEqual(400);
+    expect(post).toBeNull();
+  });
+
+  it('Delete a post succeeds', async () => {
+    const agent = request.agent(app);
+    const user = await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const unsavedPost = new Post(postData);
+    unsavedPost.user = user;
+    const savedPost = await unsavedPost.save();
+    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    const response = await agent
+      .post('/post/delete/')
+      .send({ id: savedPost._id });
+    const post = await Post.findOne({ _id: savedPost._id });
+    expect(response.status).toEqual(200);
+    expect(post).toBeNull();
+  });
+
+  it('Delete a post fails if not created by same user', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const unsavedPost = new Post(postData);
+    const savedPost = await unsavedPost.save();
+    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    const response = await agent
+      .post('/post/delete/')
+      .send({ id: savedPost._id });
+    const post = await Post.findOne({ _id: savedPost._id });
+    expect(response.status).toEqual(400);
+    expect(post.title).toEqual(postData.title);
+    expect(post.message).toEqual(postData.message);
+    expect(post.tags).toEqual(expect.objectContaining(postData.tags));
+  });
+
+  it('Delete nonexistent post fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    const response = await agent
+      .post('/post/delete/')
+      .send({ id: 'nonexistent' });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Get empty posts succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
@@ -118,5 +218,100 @@ describe('Post Route Test', () => {
     });
     const response = await agent.get(`/post/view/${userData.username}`);
     expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(0);
+  });
+
+  it('Get post succeeds', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const unsavedPost = new Post(postData);
+    unsavedPost.username = userData.username;
+    await unsavedPost.save();
+    const response = await agent.get(`/post/view/${userData.username}`);
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
+  });
+
+  it('Feed succeeds for anonymous user', async () => {
+    const agent = request.agent(app);
+    await new Post(postData).save();
+    const response = await agent.get('/post/feed');
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
+  });
+
+  it('Feed succeeds for user with followees', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    await new Post(postData).save();
+    const response = await agent.get('/post/feed');
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
+  });
+
+  it('Feed succeeds for user without followees', async () => {
+    const agent = request.agent(app);
+    const unsavedUser = new UserModel(userData);
+    unsavedUser.followed_users = [];
+    await unsavedUser.save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    await new Post(postData).save();
+    const response = await agent.get('/post/feed');
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(0);
+  });
+
+  it('Discovery succeeds for anonymous user', async () => {
+    const agent = request.agent(app);
+    /*
+    const unsavedUser = new UserModel(userData);
+    unsavedUser.followed_users = [];
+    await unsavedUser.save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    */
+    await new Post(postData).save();
+    const response = await agent.get('/post/discovery');
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
+  });
+
+  it('Discovery succeeds for user', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    await new Post(postData).save();
+    const response = await agent.get('/post/discovery');
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
+  });
+
+  it('Discovery succeeds for user with tags', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    await new Post(postData).save();
+    const response = await agent.get('/post/discovery').query({tags: postData.tags[0]});
+    expect(response.status).toEqual(200);
+    expect(response.body.results).toHaveLength(1);
   });
 });

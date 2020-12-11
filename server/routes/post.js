@@ -16,11 +16,16 @@ postRouter.post(
   passport.authenticate('jwt', { session: false }),
   upload.any(),
   async (req, res) => {
+    if (!req.body.title && !req.body.message && !req.files) {
+      return res.status(400).json('Post cannot be empty.');
+    }
     const newPost = new Post({
       title: req.body.title,
       message: req.body.message,
       user: req.user._id,
-      tags: req.body.tags.toString().replace(/\s+/g, '').split(','),
+      tags: req.body.tags
+        ? req.body.tags.toString().replace(/\s+/g, '').split(',')
+        : 'Other',
       username: req.user.username,
     });
     if (req.files) {
@@ -34,7 +39,7 @@ postRouter.post(
       .save()
       .then(() => res.send(`Post ${req.body.title} successfully created.`))
       .catch((err) => {
-        res.status(400).json(err);
+        return res.status(400).json(err);
       });
   },
 );
@@ -105,33 +110,35 @@ postRouter.get(
   '/discovery',
   passport.authenticate(['jwt', 'anonymous'], { session: false }),
   (req, res) => {
-    const searchArray = req.query.tags.replace(/\s+/g, '').split(',');
-    const regex = searchArray.map((element) => new RegExp(element, 'i'));
     let feedQuery = {};
-    feedQuery = {
-      $or: [
-        {
-          username: {
-            $in: regex,
+    if (req.query.tags) {
+      const searchArray = req.query.tags.replace(/\s+/g, '').split(',');
+      const regex = searchArray.map((element) => new RegExp(element, 'i'));
+      feedQuery = {
+        $or: [
+          {
+            username: {
+              $in: regex,
+            },
           },
-        },
-        {
-          tags: {
-            $in: regex,
+          {
+            tags: {
+              $in: regex,
+            },
           },
-        },
-        {
-          title: {
-            $in: regex,
+          {
+            title: {
+              $in: regex,
+            },
           },
-        },
-        {
-          message: {
-            $in: regex,
+          {
+            message: {
+              $in: regex,
+            },
           },
-        },
-      ],
-    };
+        ],
+      };
+    }
     Post.paginate({
       query: feedQuery,
       paginatedField: 'timestamp',
