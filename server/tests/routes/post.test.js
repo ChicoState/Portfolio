@@ -274,15 +274,6 @@ describe('Post Route Test', () => {
 
   it('Discovery succeeds for anonymous user', async () => {
     const agent = request.agent(app);
-    /*
-    const unsavedUser = new UserModel(userData);
-    unsavedUser.followed_users = [];
-    await unsavedUser.save();
-    await agent.post('/user/login').send({
-      email: userData.email,
-      password: userData.password,
-    });
-    */
     await new Post(postData).save();
     const response = await agent.get('/post/discovery');
     expect(response.status).toEqual(200);
