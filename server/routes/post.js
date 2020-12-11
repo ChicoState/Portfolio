@@ -38,9 +38,7 @@ postRouter.post(
     newPost
       .save()
       .then(() => res.send(`Post ${req.body.title} successfully created.`))
-      .catch((err) => {
-        return res.status(400).json(err);
-      });
+      .catch((err) => res.status(400).json(err));
   },
 );
 

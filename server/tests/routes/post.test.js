@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../../server');
-const route_helpers = require('../../routes/helpers');
-const model_helpers = require('../../models/helpers');
+const routeHelpers = require('../../routes/helpers');
+const modelHelpers = require('../../models/helpers');
 const UserModel = require('../../models/user');
 const Post = require('../../models/post');
 
@@ -80,7 +80,7 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(route_helpers, 'uploadFile')
+      .spyOn(routeHelpers, 'uploadFile')
       .mockImplementation();
     const response = await agent.post('/post/create/').send(basicPostData);
     const post = await Post.findOne({ username: userData.username });
@@ -99,7 +99,7 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(route_helpers, 'uploadFile')
+      .spyOn(routeHelpers, 'uploadFile')
       .mockImplementation();
     const response = await agent
       .post('/post/create/')
@@ -128,7 +128,7 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(route_helpers, 'uploadFile')
+      .spyOn(routeHelpers, 'uploadFile')
       .mockImplementation();
     const response = await agent.post('/post/create/').send({});
     const post = await Post.findOne({ username: userData.username });
@@ -145,10 +145,10 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     const uploadFileStub = jest
-      .spyOn(route_helpers, 'uploadFile')
+      .spyOn(routeHelpers, 'uploadFile')
       .mockImplementation();
-    let invalidPostData = basicPostData;
-    invalidPostData.title = ['invalid', 'title']
+    const invalidPostData = basicPostData;
+    invalidPostData.title = ['invalid', 'title'];
     const response = await agent.post('/post/create/').send(invalidPostData);
     const post = await Post.findOne({ username: userData.username });
     expect(uploadFileStub).toHaveBeenCalledTimes(0);
@@ -166,7 +166,7 @@ describe('Post Route Test', () => {
     const unsavedPost = new Post(postData);
     unsavedPost.user = user;
     const savedPost = await unsavedPost.save();
-    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    jest.spyOn(modelHelpers, 'deleteAttachment').mockImplementation();
     const response = await agent
       .post('/post/delete/')
       .send({ id: savedPost._id });
@@ -184,7 +184,7 @@ describe('Post Route Test', () => {
     });
     const unsavedPost = new Post(postData);
     const savedPost = await unsavedPost.save();
-    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    jest.spyOn(modelHelpers, 'deleteAttachment').mockImplementation();
     const response = await agent
       .post('/post/delete/')
       .send({ id: savedPost._id });
@@ -202,7 +202,7 @@ describe('Post Route Test', () => {
       email: userData.email,
       password: userData.password,
     });
-    jest.spyOn(model_helpers, 'deleteAttachment').mockImplementation();
+    jest.spyOn(modelHelpers, 'deleteAttachment').mockImplementation();
     const response = await agent
       .post('/post/delete/')
       .send({ id: 'nonexistent' });
@@ -310,7 +310,9 @@ describe('Post Route Test', () => {
       password: userData.password,
     });
     await new Post(postData).save();
-    const response = await agent.get('/post/discovery').query({tags: postData.tags[0]});
+    const response = await agent
+      .get('/post/discovery')
+      .query({ tags: postData.tags[0] });
     expect(response.status).toEqual(200);
     expect(response.body.results).toHaveLength(1);
   });

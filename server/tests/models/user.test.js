@@ -101,7 +101,7 @@ describe('User Model Test', () => {
     savedUser.comparePassword(userData.password, (err, isMatch) => {
       expect(err).toBeFalsy();
       expect(isMatch).toBeTruthy();
-    }); 
+    });
   });
 
   it('User missing a username', async () => {
