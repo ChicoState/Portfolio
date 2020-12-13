@@ -149,4 +149,5 @@ class DisplayPost extends Component {
     );
   }
 }
+
 export default DisplayPost;

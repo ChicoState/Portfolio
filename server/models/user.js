@@ -49,7 +49,19 @@ const UserSchema = mongoose.Schema({
     index: true,
     max: 1024,
   },
+  public: {
+    type: Boolean,
+    default: true,
+  },
   followed_users: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+  },
+  pending_followers: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,

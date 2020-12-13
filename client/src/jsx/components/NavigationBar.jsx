@@ -31,6 +31,11 @@ class NavigationBar extends Component {
                 Home
               </Nav.Link>
             </IndexLinkContainer>
+            <IndexLinkContainer key="7" to="/discovery">
+              <Nav.Link active={false} eventKey="1">
+                Discover
+              </Nav.Link>
+            </IndexLinkContainer>
           </Nav>
           <Nav className="ml-auto">
             {curUsername

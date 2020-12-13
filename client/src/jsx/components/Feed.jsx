@@ -5,6 +5,7 @@ import Post from './Post';
 import { getUserName } from './Authentication';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+// DEPRECATED
 class Feed extends Component {
   state = {
     posts: null,

@@ -6,6 +6,7 @@ import Login from '../components/screens/Login';
 import Logout from '../components/screens/Logout';
 import Profile from '../components/screens/Profile';
 import Account from '../components/screens/Account';
+import Discover from '../components/screens/Discovery';
 import NotFound from '../components/screens/NotFound';
 import { getUserName } from '../components/Authentication';
 
@@ -21,6 +22,7 @@ class Routes extends Component {
           <Route exact path="/profile" render={() => (<Redirect to={this.props.cookies && getUserName(this.props.cookies.get('access_token')) ? `/profile/${getUserName(this.props.cookies.get('access_token'))}` : '/login'} />)}/>
           <Route exact path="/profile/:username" children={<Profile cookies={this.props.cookies}/>} />
           <Route exact path="/account" children={<Account cookies={this.props.cookies}/>} />
+          <Route exact path="/discovery" children={<Discover cookies={this.props.cookies}/>} />
           <Route component={NotFound} />
         </Switch>
        
