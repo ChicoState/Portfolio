@@ -57,9 +57,6 @@ class FollowButton extends Component {
       method: 'GET',
       withCredentials: true,
       url: '/user/visibility',
-      data: {
-        username,
-      },
     })
       .then((res) => {
         this.setState({ visibility: res.data.visibility });
