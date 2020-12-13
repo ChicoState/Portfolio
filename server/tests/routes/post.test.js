@@ -36,7 +36,6 @@ const postData = {
 };
 
 describe('Post Route Test', () => {
-  let server;
   beforeAll(async () => {
     mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
@@ -52,12 +51,10 @@ describe('Post Route Test', () => {
         }
       },
     );
-    server = app.listen(3001);
   });
 
   afterAll(async () => {
     mongoose.connection.close();
-    server.close();
   });
 
   afterEach(async () => {
@@ -170,7 +167,7 @@ describe('Post Route Test', () => {
     const response = await agent
       .post('/post/delete/')
       .send({ id: savedPost._id });
-    const post = await Post.findOne({ _id: savedPost._id });
+    const post = await Post.findById(savedPost._id);
     expect(response.status).toEqual(200);
     expect(post).toBeNull();
   });
@@ -188,7 +185,7 @@ describe('Post Route Test', () => {
     const response = await agent
       .post('/post/delete/')
       .send({ id: savedPost._id });
-    const post = await Post.findOne({ _id: savedPost._id });
+    const post = await Post.findById(savedPost._id);
     expect(response.status).toEqual(400);
     expect(post.title).toEqual(postData.title);
     expect(post.message).toEqual(postData.message);
@@ -221,7 +218,7 @@ describe('Post Route Test', () => {
     expect(response.body.results).toHaveLength(0);
   });
 
-  it('Get post succeeds', async () => {
+  it('Get posts succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
