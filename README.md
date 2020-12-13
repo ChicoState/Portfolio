@@ -8,7 +8,7 @@
 
  ## Team Members
  - [Colton Davies](https://github.com/Colton0012)
- - [Devan Hedglin](https://github.com/Colton0012)
+ - [Devan Hedglin](https://github.com/dlhedglin)
  - [Joseph Levin](https://github.com/Joseph-Levin)
  - [Luke Zearfoss](https://github.com/LWZearfoss)
 
