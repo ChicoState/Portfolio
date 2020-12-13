@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ChicoState/Portfolio.svg?branch=main)](https://travis-ci.org/ChicoState/Portfolio)
+[![Build Status](https://travis-ci.com/ChicoState/Portfolio.svg?branch=main)](https://travis-ci.com/ChicoState/Portfolio)
 
 # Getting Started
 
