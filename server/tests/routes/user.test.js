@@ -323,7 +323,7 @@ describe('User Route Test', () => {
     const savedUser2 = await new UserModel(userData2).save();
     const validUser1 = new UserModel(userData1);
     validUser1.followed_users = [savedUser2._id];
-    savedUser1 = await validUser1.save();
+    const savedUser1 = await validUser1.save();
     await agent.post('/user/login').send({
       email: userData1.email,
       password: userData1.password,
@@ -382,7 +382,7 @@ describe('User Route Test', () => {
     expect(user2.pending_followers).toHaveLength(0);
   });
 
-it('Accept pending follow succeeds with private user', async () => {
+  it('Accept pending follow succeeds with private user', async () => {
     const agent = request.agent(app);
     const savedUser2 = await new UserModel(userData2).save();
     const validUser1 = new UserModel(userData1);
@@ -395,7 +395,7 @@ it('Accept pending follow succeeds with private user', async () => {
     });
     const response = await agent.post('/user/handle_follower_request/').send({
       follower_username: userData2.username,
-      request_status: true
+      request_status: true,
     });
     const user1 = await UserModel.findById(savedUser1._id);
     const user2 = await UserModel.findById(savedUser2._id);
@@ -419,7 +419,7 @@ it('Accept pending follow succeeds with private user', async () => {
     });
     const response = await agent.post('/user/handle_follower_request/').send({
       follower_username: userData2.username,
-      request_status: false
+      request_status: false,
     });
     const user1 = await UserModel.findById(savedUser1._id);
     const user2 = await UserModel.findById(savedUser2._id);
@@ -444,7 +444,7 @@ it('Accept pending follow succeeds with private user', async () => {
     expect(response.status).toEqual(200);
     expect(response.body.follow_status).toEqual('followed');
   });
-  
+
   it('Follow_status with pending user succeeds', async () => {
     const agent = request.agent(app);
     const savedUser1 = await new UserModel(userData1).save();
@@ -463,7 +463,7 @@ it('Accept pending follow succeeds with private user', async () => {
     expect(response.body.follow_status).toEqual('pending');
   });
 
-it('Follow_status with same user public succeeds', async () => {
+  it('Follow_status with same user public succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData1).save();
     await agent.post('/user/login').send({
