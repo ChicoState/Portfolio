@@ -52,14 +52,11 @@ class FollowButton extends Component {
       });
   }
 
-  togglePublic(username) {
+  togglePublic() {
     axios({
-      method: 'PUT',
+      method: 'GET',
       withCredentials: true,
       url: '/user/visibility',
-      data: {
-        username,
-      },
     })
       .then((res) => {
         this.setState({ visibility: res.data.visibility });
@@ -74,7 +71,7 @@ class FollowButton extends Component {
     if (this.props.pageUsername === pageUser) {
       return (
         <div>
-          <Button onClick={() => this.togglePublic(this.props.pageUsername)}>
+          <Button onClick={() => this.togglePublic()}>
             {this.state.visibility ? 'Public' : 'Private'}
           </Button>
           <PendingFollowers

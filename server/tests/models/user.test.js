@@ -90,6 +90,20 @@ describe('User Model Test', () => {
     });
   });
 
+  it('User password is not changed on update', async () => {
+    const validUser = new UserModel(userData);
+    const savedUser = await validUser.save();
+    savedUser.comparePassword(userData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
+    await savedUser.save();
+    savedUser.comparePassword(userData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
+  });
+
   it('User missing a username', async () => {
     const invalidUser = new UserModel({
       email: 'b@mail.com',

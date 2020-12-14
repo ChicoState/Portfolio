@@ -3,6 +3,12 @@ const request = require('supertest');
 const app = require('../../server');
 const UserModel = require('../../models/user');
 
+const basicUserData = {
+  username: 'user',
+  email: 'email@email.com',
+  password: 'password',
+};
+
 const userData = {
   username: 'testuser',
   email: 'test@nuts.com',
@@ -12,8 +18,8 @@ const userData = {
   middle_name: 'Doggy',
   last_name: 'Dog',
   public: true,
-  followed_users: [mongoose.Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa')],
-  pending_followers: [mongoose.Types.ObjectId('aaaaaaaaaaaaaaaaaaaaaaaa')],
+  followed_users: [],
+  pending_followers: [],
 };
 
 const userData1 = {
@@ -42,7 +48,7 @@ const userData2 = {
   pending_followers: [],
 };
 
-describe('User Endpoint Test', () => {
+describe('User Route Test', () => {
   beforeAll(async () => {
     mongoose.set('useNewUrlParser', true);
     await mongoose.connect(
@@ -76,68 +82,89 @@ describe('User Endpoint Test', () => {
     await mongoose.connection.close();
   });
 
-  // Test for creating a new user.
-  it('Create User', async () => {
+  it('Register with new user succeeds', async () => {
     const agent = request.agent(app);
-    const response = await agent.post('/user/register/').send(userData);
+    const response = await agent.post('/user/register/').send(basicUserData);
     expect(response.status).toEqual(200);
+    const user = await UserModel.findOne({ username: basicUserData.username });
+    expect(user.email).toEqual(basicUserData.email);
+    user.comparePassword(basicUserData.password, (err, isMatch) => {
+      expect(err).toBeFalsy();
+      expect(isMatch).toBeTruthy();
+    });
   });
 
-  // //Test for creating a user that already exist.
-  it('Failed Create User', async () => {
+  it('Register with pre-existing user fails', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     const response = await agent.post('/user/register/').send(userData);
     expect(response.status).toEqual(400);
   });
 
-  // Valid user Login
-  it('Login Endpoint', async () => {
+  it('Login with user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
-    const login = await agent.post('/user/login').send({
+    const response = await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    expect(login.status).toEqual(200);
+    expect(response.status).toEqual(200);
   });
 
-  // Testing logout endpoint
-  it('Logout Endpoint', async () => {
+  it('Login with user providing wrong password fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    const response = await agent.post('/user/login').send({
+      email: userData.email,
+      password: 'mismatch',
+    });
+    expect(response.status).toEqual(401);
+  });
+
+  it('Login with non-existent user fails', async () => {
+    const agent = request.agent(app);
+    const response = await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    expect(response.status).toEqual(401);
+  });
+
+  it('Logout with logged in user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const logout = await agent.get('/user/logout');
-    expect(logout.status).toEqual(200);
+    const response = await agent.get('/user/logout');
+    expect(response.status).toEqual(200);
   });
 
-  it('Logout Endpoint After No Login', async () => {
+  it('Logout with logged out user fails', async () => {
     const agent = request.agent(app);
-    const logout = await agent.get('/user/logout');
-    expect(logout.status).toEqual(401);
+    const response = await agent.get('/user/logout');
+    expect(response.status).toEqual(401);
   });
 
-  it('Authenticated Endpoint', async () => {
+  it('Authenticated with logged in user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const auth = await agent.get('/user/authenticated').send(userData);
-    expect(auth.status).toEqual(200);
+    const response = await agent.get('/user/authenticated').send(userData);
+    expect(response.status).toEqual(200);
   });
 
-  it('Not authenticated', async () => {
+  it('Authenticated with logged out user fails', async () => {
     const agent = request.agent(app);
-    const auth = await agent.get('/user/authenticated');
-    expect(auth.status).toEqual(401);
+    const response = await agent.get('/user/authenticated');
+    expect(response.status).toEqual(401);
   });
 
-  it('Logout No Longer Authenticated Endpoint', async () => {
+  it('Authenticated after logout fails', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
@@ -145,29 +172,35 @@ describe('User Endpoint Test', () => {
       password: userData.password,
     });
     await agent.get('/user/logout');
-    const auth = await agent.get('/user/authenticated').send(userData);
-    expect(auth.status).toEqual(401);
+    const response = await agent.get('/user/authenticated').send(userData);
+    expect(response.status).toEqual(401);
   });
 
-  it('Exists Endpoint With Existing User', async () => {
+  it('Exists with existing user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const auth = await agent.get(`/user/exists/${userData.username}`);
-    expect(auth.status).toEqual(200);
+    const response = await agent.get(`/user/exists/${userData.username}`);
+    expect(response.status).toEqual(200);
+    expect(response.body.exists).toEqual(true);
   });
 
-  it('Exists Endpoint With Existing User', async () => {
+  it('Exists with non-existent user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
-    const auth = await agent.get(`/user/exists/${userData.username}testser`);
-    expect(auth.status).toEqual(401);
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const response = await agent.get('/user/exists/nonexistent');
+    expect(response.status).toEqual(200);
+    expect(response.body.exists).toEqual(false);
   });
 
-  it('Update User Info Endpoint', async () => {
+  it('Update user info endpoint succeeds', async () => {
     const agent = request.agent(app);
     const validUser = new UserModel(userData);
     const savedUser = await validUser.save();
@@ -175,12 +208,29 @@ describe('User Endpoint Test', () => {
       email: userData.email,
       password: userData.password,
     });
-    savedUser.username = 'timmy12';
-    const update = await agent.put('/user/update/info').send(savedUser._id);
-    expect(update.status).toEqual(200);
+    const response = await agent
+      .put('/user/update/info')
+      .send({ first_name: 'first', middle_name: 'middle', last_name: 'last' });
+    const user = await UserModel.findById(savedUser._id);
+    expect(response.status).toEqual(200);
+    expect(user.first_name).toEqual('first');
+    expect(user.middle_name).toEqual('middle');
+    expect(user.last_name).toEqual('last');
   });
 
-  it('Update User Info Endpoint', async () => {
+  it('Update user info endpoint empty request fails', async () => {
+    const agent = request.agent(app);
+    const validUser = new UserModel(userData);
+    await validUser.save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const response = await agent.put('/user/update/info').send({});
+    expect(response.status).toEqual(400);
+  });
+
+  it('Update user info endpoint ignores unsupported fields and succeeds', async () => {
     const agent = request.agent(app);
     const validUser = new UserModel(userData);
     const savedUser = await validUser.save();
@@ -188,66 +238,343 @@ describe('User Endpoint Test', () => {
       email: userData.email,
       password: userData.password,
     });
-    savedUser.username = 'timmy12';
-    const update = await agent.put('/user/update/info').send(savedUser._id);
-    expect(update.status).toEqual(200);
+    const response = await agent
+      .put('/user/update/info')
+      .send({ first_name: 'first', username: 'username' });
+    const user = await UserModel.findById(savedUser._id);
+    expect(response.status).toEqual(200);
+    expect(user.first_name).toEqual('first');
+    expect(user.username).toEqual(userData.username);
   });
 
-  it('Update User Info Not Authorized Endpoint', async () => {
+  it('Update user info not authorized fails', async () => {
     const agent = request.agent(app);
     const validUser = new UserModel(userData);
-    const savedUser = await validUser.save();
-    savedUser.username = 'timmy12';
-    const update = await agent.put('/user/update/info').send(savedUser._id);
-    expect(update.status).toEqual(401);
+    await validUser.save();
+    const response = await agent
+      .put('/user/update/info')
+      .send({ first_name: 'first', middle_name: 'middle', last_name: 'last' });
+    expect(response.status).toEqual(401);
   });
 
-  it('Update User Password Endpoint', async () => {
+  it('Update user password endpoint succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const update = await agent.put('/user/update/password').send({
+    const response = await agent.put('/user/update/password').send({
       old_password: userData.password,
       new_password: 'bryan123',
-      new_password_confirmed: 'bryan123',
     });
-    expect(update.status).toEqual(200);
+    expect(response.status).toEqual(200);
   });
 
-  it('Update User Password Invalid Password Endpoint', async () => {
+  it('Update user password invalid password fails', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const update = await agent.put('/user/update/password').send({
-      old_password: 'HELLO WORLD',
+    const response = await agent.put('/user/update/password').send({
+      old_password: 'INVALID',
       new_password: 'bryan123',
-      new_password_confirmed: 'bryan123',
     });
-    expect(update.status).toEqual(500);
+    expect(response.status).toEqual(400);
   });
 
-  it('Update User Password Invalid Duplicate Password Endpoint', async () => {
+  it('Update user password empty request fails', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
     await agent.post('/user/login').send({
       email: userData.email,
       password: userData.password,
     });
-    const update = await agent.put('/user/update/password').send({
+    const response = await agent.put('/user/update/password').send({});
+    expect(response.status).toEqual(400);
+  });
+
+  it('Update user password duplicate password fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const response = await agent.put('/user/update/password').send({
       old_password: userData.password,
       new_password: userData.password,
-      new_password_confirmed: userData.new_password,
     });
-    expect(update.status).toEqual(500);
+    expect(response.status).toEqual(400);
   });
 
-  it('Create two users, check follow_status succeeded', async () => {
+  it('Follow succeeds with public users', async () => {
+    const agent = request.agent(app);
+    const savedUser1 = await new UserModel(userData1).save();
+    const savedUser2 = await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    const user = await UserModel.findById(savedUser1._id);
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('followed');
+    expect(user.followed_users).toEqual(
+      expect.arrayContaining([savedUser2._id]),
+    );
+  });
+
+  it('Follow unfollow succeeds with public users', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.followed_users = [savedUser2._id];
+    const savedUser1 = await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    const user = await UserModel.findById(savedUser1._id);
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('unfollowed');
+    expect(user.followed_users).toHaveLength(0);
+  });
+
+  it('Follow pending follow succeeds with private user', async () => {
+    const agent = request.agent(app);
+    const savedUser1 = await new UserModel(userData1).save();
+    const validUser2 = new UserModel(userData2);
+    validUser2.public = false;
+    const savedUser2 = await validUser2.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    const user1 = await UserModel.findById(savedUser1._id);
+    const user2 = await UserModel.findById(savedUser2._id);
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('pending');
+    expect(user1.followed_users).toHaveLength(0);
+    expect(user2.pending_followers).toEqual(
+      expect.arrayContaining([savedUser1._id]),
+    );
+  });
+
+  it('Follow canceling pending follow succeeds with private user', async () => {
+    const agent = request.agent(app);
+    const savedUser1 = await new UserModel(userData1).save();
+    const validUser2 = new UserModel(userData2);
+    validUser2.public = false;
+    validUser2.pending_followers = [savedUser1._id];
+    const savedUser2 = await validUser2.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    const user1 = await UserModel.findById(savedUser1._id);
+    const user2 = await UserModel.findById(savedUser2._id);
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('unfollowed');
+    expect(user1.followed_users).toHaveLength(0);
+    expect(user2.pending_followers).toHaveLength(0);
+  });
+
+  it('Follow with empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({});
+    expect(response.status).toEqual(400);
+  });
+
+  it('Follow with non-existent user fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request accept pending follow succeeds with private user', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    validUser1.pending_followers = [savedUser2._id];
+    const savedUser1 = await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: true,
+    });
+    const user1 = await UserModel.findById(savedUser1._id);
+    const user2 = await UserModel.findById(savedUser2._id);
+    expect(response.status).toEqual(200);
+    expect(user1.pending_followers).toHaveLength(0);
+    expect(user2.followed_users).toEqual(
+      expect.arrayContaining([savedUser1._id]),
+    );
+  });
+
+  it('Handle_follower_request decline pending follow succeeds with private user', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    validUser1.pending_followers = [savedUser2._id];
+    const savedUser1 = await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: false,
+    });
+    const user1 = await UserModel.findById(savedUser1._id);
+    const user2 = await UserModel.findById(savedUser2._id);
+    expect(response.status).toEqual(200);
+    expect(user1.pending_followers).toHaveLength(0);
+    expect(user2.followed_users).toHaveLength(0);
+  });
+
+  it('Handle_follower_request user not a pending follower fails', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: false,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request user does not exist fails', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: false,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent
+      .post('/user/handle_follower_request/')
+      .send({});
+    expect(response.status).toEqual(400);
+  });
+
+  it('Follow_status with followed user succeeds', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.followed_users = [savedUser2._id];
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/').query({
+      followee_username: userData2.username,
+    });
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('followed');
+  });
+
+  it('Follow_status with pending user succeeds', async () => {
+    const agent = request.agent(app);
+    const savedUser1 = await new UserModel(userData1).save();
+    const validUser2 = new UserModel(userData2);
+    validUser2.public = false;
+    validUser2.pending_followers = [savedUser1._id];
+    await validUser2.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/').query({
+      followee_username: userData2.username,
+    });
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('pending');
+  });
+
+  it('Follow_status with same user public succeeds', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/').query({
+      followee_username: userData1.username,
+    });
+    expect(response.status).toEqual(200);
+    expect(response.body.visibility).toEqual(true);
+  });
+
+  it('Follow_status with same user private succeeds', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/').query({
+      followee_username: userData1.username,
+    });
+    expect(response.status).toEqual(200);
+    expect(response.body.visibility).toEqual(false);
+  });
+
+  it('Follow_status with unfollowed user succeeds', async () => {
     const agent = request.agent(app);
     await new UserModel(userData1).save();
     await new UserModel(userData2).save();
@@ -255,9 +582,97 @@ describe('User Endpoint Test', () => {
       email: userData1.email,
       password: userData1.password,
     });
-    const followStatusResponse = await agent.get('/user/follow_status/').query({
+    const response = await agent.get('/user/follow_status/').query({
       followee_username: userData2.username,
     });
-    expect(followStatusResponse.status).toEqual(200);
+    expect(response.status).toEqual(200);
+    expect(response.body.follow_status).toEqual('unfollowed');
+  });
+
+  it('Follow_status with empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/');
+    expect(response.status).toEqual(400);
+  });
+
+  it('Pending_followers with no pending succeeds', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/pending_followers/');
+    expect(response.status).toEqual(200);
+    expect(response.body.pending_followers).toHaveLength(0);
+  });
+
+  it('Pending_followers with pending succeeds', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.pending_followers = [savedUser2._id];
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/pending_followers/');
+    expect(response.status).toEqual(200);
+    expect(response.body.pending_followers).toHaveLength(1);
+  });
+
+  it('Visibility with public user succeeds', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/visibility/');
+    expect(response.status).toEqual(200);
+    expect(response.body.visibility).toEqual(false);
+  });
+
+  it('Visibility with private user succeeds', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/visibility/');
+    expect(response.status).toEqual(200);
+    expect(response.body.visibility).toEqual(true);
+  });
+
+  it('Visibility with private user with pending users succeeds', async () => {
+    const agent = request.agent(app);
+    const savedUser2 = await new UserModel(userData2).save();
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    validUser1.pending_followers = [savedUser2._id];
+    const savedUser1 = await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/visibility/');
+    const user1 = await UserModel.findById(savedUser1._id);
+    const user2 = await UserModel.findById(savedUser2._id);
+    expect(response.status).toEqual(200);
+    expect(response.body.visibility).toEqual(true);
+    expect(user1.pending_followers).toHaveLength(0);
+    expect(user2.followed_users).toEqual(
+      expect.arrayContaining([savedUser1._id]),
+    );
   });
 });
