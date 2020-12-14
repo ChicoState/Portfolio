@@ -61,7 +61,7 @@ class Signup extends Component {
             return errors;
           }}
         >
-          {({ values, handleSubmit, isSubmitting, errors }) => (
+          {({ handleSubmit, isSubmitting, errors }) => (
             <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formSignupUsername">
                 <Form.Label>Username</Form.Label>
@@ -124,9 +124,6 @@ class Signup extends Component {
                   Sign up
                 </Button>
               )}
-
-              <pre>{JSON.stringify(values, null, 2)}</pre>
-              <pre>{JSON.stringify(errors, null, 2)}</pre>
             </Form>
           )}
         </Formik>
