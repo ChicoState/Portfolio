@@ -154,6 +154,9 @@ userRouter.put(
         if (error) {
           return res.status(400).send(error);
         }
+        if (!followee) {
+          return res.status(400).send('Request must provide followee username');
+        }
         const followeeIndex = req.user.followed_users.indexOf(followee._id);
         // if we do not follow the followee
         if (followeeIndex < 0) {
@@ -241,6 +244,9 @@ userRouter.post(
       if (error) {
         return res.status(400).send(error);
       }
+      if (!follower) {
+        return res.status(400).send('User does not exist');
+      }
       const followerIndex = req.user.pending_followers.indexOf(follower._id);
       if (followerIndex < 0) {
         return res.status(400).send('User not in pending followers');
@@ -276,6 +282,9 @@ userRouter.get(
       (error, followee) => {
         if (error) {
           return res.status(400).send(error);
+        }
+        if (!followee) {
+          return res.status(400).send('User does not exist');
         }
         if (String(req.user._id) === String(followee._id)) {
           return res.status(200).json({ visibility: req.user.public });
@@ -340,7 +349,6 @@ userRouter.get(
         req.user.pending_followers.splice(i, 1);
       }
     }
-
     req.user.save((saveError) => {
       if (saveError) {
         return res

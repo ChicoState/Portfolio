@@ -285,6 +285,17 @@ describe('User Route Test', () => {
     expect(response.status).toEqual(400);
   });
 
+  it('Update user password empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData).save();
+    await agent.post('/user/login').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    const response = await agent.put('/user/update/password').send({});
+    expect(response.status).toEqual(400);
+  });
+
   it('Update user password duplicate password fails', async () => {
     const agent = request.agent(app);
     await new UserModel(userData).save();
@@ -318,7 +329,7 @@ describe('User Route Test', () => {
     );
   });
 
-  it('Unfollow succeeds with public users', async () => {
+  it('Follow unfollow succeeds with public users', async () => {
     const agent = request.agent(app);
     const savedUser2 = await new UserModel(userData2).save();
     const validUser1 = new UserModel(userData1);
@@ -337,7 +348,7 @@ describe('User Route Test', () => {
     expect(user.followed_users).toHaveLength(0);
   });
 
-  it('Pending follow succeeds with private user', async () => {
+  it('Follow pending follow succeeds with private user', async () => {
     const agent = request.agent(app);
     const savedUser1 = await new UserModel(userData1).save();
     const validUser2 = new UserModel(userData2);
@@ -360,7 +371,7 @@ describe('User Route Test', () => {
     );
   });
 
-  it('Canceling pending follow succeeds with private user', async () => {
+  it('Follow canceling pending follow succeeds with private user', async () => {
     const agent = request.agent(app);
     const savedUser1 = await new UserModel(userData1).save();
     const validUser2 = new UserModel(userData2);
@@ -382,7 +393,31 @@ describe('User Route Test', () => {
     expect(user2.pending_followers).toHaveLength(0);
   });
 
-  it('Accept pending follow succeeds with private user', async () => {
+  it('Follow with empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({});
+    expect(response.status).toEqual(400);
+  });
+
+  it('Follow with non-existent user fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.put('/user/follow/').send({
+      followee_username: userData2.username,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request accept pending follow succeeds with private user', async () => {
     const agent = request.agent(app);
     const savedUser2 = await new UserModel(userData2).save();
     const validUser1 = new UserModel(userData1);
@@ -406,7 +441,7 @@ describe('User Route Test', () => {
     );
   });
 
-  it('Decline pending follow succeeds with private user', async () => {
+  it('Handle_follower_request decline pending follow succeeds with private user', async () => {
     const agent = request.agent(app);
     const savedUser2 = await new UserModel(userData2).save();
     const validUser1 = new UserModel(userData1);
@@ -426,6 +461,52 @@ describe('User Route Test', () => {
     expect(response.status).toEqual(200);
     expect(user1.pending_followers).toHaveLength(0);
     expect(user2.followed_users).toHaveLength(0);
+  });
+
+  it('Handle_follower_request user not a pending follower fails', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: false,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request user does not exist fails', async () => {
+    const agent = request.agent(app);
+    const validUser1 = new UserModel(userData1);
+    validUser1.public = false;
+    await validUser1.save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.post('/user/handle_follower_request/').send({
+      follower_username: userData2.username,
+      request_status: false,
+    });
+    expect(response.status).toEqual(400);
+  });
+
+  it('Handle_follower_request empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent
+      .post('/user/handle_follower_request/')
+      .send({});
+    expect(response.status).toEqual(400);
   });
 
   it('Follow_status with followed user succeeds', async () => {
@@ -506,6 +587,18 @@ describe('User Route Test', () => {
     });
     expect(response.status).toEqual(200);
     expect(response.body.follow_status).toEqual('unfollowed');
+  });
+
+  it('Follow_status with empty request fails', async () => {
+    const agent = request.agent(app);
+    await new UserModel(userData1).save();
+    await new UserModel(userData2).save();
+    await agent.post('/user/login').send({
+      email: userData1.email,
+      password: userData1.password,
+    });
+    const response = await agent.get('/user/follow_status/');
+    expect(response.status).toEqual(400);
   });
 
   it('Pending_followers with no pending succeeds', async () => {
